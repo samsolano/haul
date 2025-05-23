@@ -1,0 +1,36 @@
+Haul Authentication: {
+  shape: sequence_diagram
+
+  client: "Frontend (Next.js)"
+  server: "Backend (Express)"
+  db: "Database (MongoDB)"
+
+  register: {
+    client -> server: "POST /auth/register {user, pass}"
+    server -> db: "Check if user exists"
+
+    if: "if user exists" {
+      db -> server: "Returns user"
+      server -> client: "409 Conflict"
+    }
+    else: "if user does not exist" {
+      db -> server: "Create user"
+      server -> db: "Returns new user"
+      server -> client: "201 Created"
+    }
+  }
+
+  login: {
+    client -> server: "POST /auth/login {user, pass}"
+    server -> db: "Find user by email"
+
+    if: "if credentials match" {
+      db -> server: "Returns user"
+      server -> client: "200 OK {JWT}"
+    }
+    else: "if credentials do not match" {
+      db -> server: "Returns null"
+      server -> client: "401 Unauthorized"
+    }
+  }
+}

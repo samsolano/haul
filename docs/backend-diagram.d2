@@ -1,2 +1,21 @@
-shape: sequence_diagram
-Client -> Server: "POST /auth/login {email, password}"
+Haul Authentication: {
+  shape: sequence_diagram
+
+  client: Frontend (Next.js)
+  server: Backend (Express)
+  db: Database (MongoDB)
+
+  auth: {
+    client -> server: "POST /auth/login {user, pass}"
+    server -> db: "Find user by email"
+
+    if: "credentials match" {
+      db -> server: "Returns user"
+      server -> client: "200 OK {JWT}"
+    }
+    else: "credentials do not match" {
+      db -> server: "Returns null"
+      server -> client: "401 Unauthorized"
+    }
+  }
+}

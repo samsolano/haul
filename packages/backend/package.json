@@ -3,14 +3,16 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "dev": "tsx watch src/backend.ts",
-    "start": "tsx src/backend.ts"
+    "dev": "tsx watch --env-file=.env src/backend.ts",
+    "start": "tsx --env-file=.env src/backend.ts"
   },
   "author": "",
   "license": "ISC",
   "description": "",
   "dependencies": {
-    "express": "^5.1.0"
+    "express": "^5.1.0",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.15.0"
   },
   "devDependencies": {
     "@eslint/compat": "^1.2.9",

@@ -8,25 +8,25 @@ export default function Navbar(){
     const pathname = usePathname();
     return(
         
-        <div style={{display: "flex", alignItems: "center", padding: "10px", marginLeft: "18px"}}>
+        <div className="flex items-center p-2.5 ml-4.5">
         <Link href="/">
-            <button style={{fontSize: '30px'}}>
+            <button className="text-3xl">
             HAUL
             </button>
         </Link>
-        <div style={{fontSize:'20px', marginLeft:"auto", marginRight: "18px", display: "flex", gap: "25px"}}>
+        <div className="text-xl ml-auto mr-4.5 flex gap-6">
             <Link href="/finds">
-            <button style={{fontWeight: pathname === '/finds' ? 'bolder': 'normal'}}>
+            <button className={pathname === '/finds' ? 'font-bold' : 'font-normal'}>
             FINDS
             </button>
         </Link>
             <Link href="/stores">
-            <button style={{fontWeight: pathname === '/stores' ? 'bolder': 'normal'}}>
+            <button className={pathname === '/stores' ? 'font-bold' : 'font-normal'}>
             STORES
             </button>
         </Link>
             <Link href="/profile">
-            <button style={{fontWeight: pathname === '/profile' ? 'bolder': 'normal'}}>
+            <button className={pathname === '/profile' ? 'font-bold' : 'font-normal'}>
             PROFILE
             </button>
         </Link>

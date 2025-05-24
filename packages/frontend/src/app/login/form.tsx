@@ -44,7 +44,7 @@ function Form({ handleSubmit }: FormProps) {
                     onChange={handleChange}
                     className="shadow appearance-none border rounded w-full py-2 px-3 leading-tight focus:outline-none focus:shadow-outline"
                 />
-            
+
                 <label htmlFor="password">Password</label>
                 <input
                     type="password"
@@ -55,13 +55,13 @@ function Form({ handleSubmit }: FormProps) {
                     onChange={handleChange}
                     className="border rounded w-full py-2 px-3 mb-3 leading-tight"
                 />
-            
-                <button 
+
+                <button
                     type="button"
                     onClick={submitForm}
                     className="bg-white text-black p-3 rounded-lg"
                 >
-                Sign In
+                    Sign In
                 </button>
         </form>
     );

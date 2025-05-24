@@ -22,7 +22,7 @@ Haul Authentication: {
 
   login: {
     client -> server: "POST /auth/login {user, pass}"
-    server -> db: "Find user by email"
+    server -> db: "Find user by username"
 
     if: "if credentials match" {
       db -> server: "Returns user"

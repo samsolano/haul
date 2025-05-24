@@ -5,9 +5,9 @@ export default function dashboard() {
     <div className="flex flex-col center items-center p-20">
       <div className="text-5xl">Welcome to Haul</div>
 
-      <Link href="/finds">
+      <Link href="/login">
         <button className="bg-white text-black p-3 rounded-lg mt-40">
-          Go to mainpage
+          Enter
         </button>
       </Link>
     </div>

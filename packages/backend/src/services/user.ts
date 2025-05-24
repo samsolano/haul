@@ -10,12 +10,8 @@ export async function findUserByName(username: string): Promise<UserWithId | nul
     return User.findOne({ username });
 }
 
-export async function findUserByEmail(email: string): Promise<UserWithId | null> {
-    return User.findOne({ email });
-}
-
-export async function createUser(email: string, password: string, username: string): Promise<UserWithId> {
-    const user = new User({ email, password, username });
+export async function createUser(username: string, password: string): Promise<UserWithId> {
+    const user = new User({ username, password });
 
     // @ts-ignore: Not sure why their typings don't include _id.
     // But from my tests, it is included.
@@ -37,7 +33,7 @@ const jwtExpiryTime = "30m";
 
 type JWTData = { _id: UserWithId["_id"]; };
 
-export function generateJWT(user: UserWithId, duration: string): string {
+export function generateJWT(user: UserWithId): string {
     return jwt.sign({ _id: user._id }, jwtSecret as string, { expiresIn: jwtExpiryTime })
 }
 

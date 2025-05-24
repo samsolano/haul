@@ -1,7 +1,7 @@
 import express, { NextFunction, Request, Response } from "express";
 import mongoose from "mongoose";
 import cors from "cors";
-import { createUser, findAllUsers, findUserByEmail, findUserByName, generateJWT, isPasswordValid, verifyJWT } from "./services/user";
+import { createUser, findUserByName, generateJWT, isPasswordValid, verifyJWT } from "./services/user";
 
 mongoose.set("debug", true);
 mongoose.connect(`${process.env.MONGO_CONNECTION_STRING}/MainDatabase`).catch((err) => {
@@ -21,13 +21,9 @@ app.get("/", (req, res) => {
 
 app.post("/auth/register", async (req, res) => {
     const username = req.body?.username;
-    const email = req.body?.email;
     const password = req.body?.password;
 
     const errors: string[] = [];
-    if (typeof email !== "string") {
-        errors.push("Email must be a string");
-    }
     if (typeof password !== "string") {
         errors.push("Password must be a string");
     }
@@ -40,24 +36,24 @@ app.post("/auth/register", async (req, res) => {
         return;
     }
 
-    if (await findUserByName(username) || await findUserByEmail(email)) {
+    if (await findUserByName(username)) {
         res.status(400).send("User already exists");
         return;
     }
 
-    const user = await createUser(email, password, username);
-    const token = generateJWT(user, "30m");
+    const user = await createUser(username, password);
+    const token = generateJWT(user);
 
     res.status(201).json({ token, user });
 });
 
 app.post("/auth/login", async (req, res) => {
-    const email = req.body?.email;
+    const username = req.body?.username;
     const password = req.body?.password;
 
     const errors: string[] = [];
-    if (typeof email !== "string") {
-        errors.push("Email must be a string");
+    if (typeof username !== "string") {
+        errors.push("Username must be a string");
     }
     if (typeof password !== "string") {
         errors.push("Password must be a string");
@@ -68,7 +64,7 @@ app.post("/auth/login", async (req, res) => {
         return;
     }
 
-    const user = await findUserByEmail(email);
+    const user = await findUserByName(username);
     if (!user) {
         res.status(400).send("User not found");
         return;
@@ -79,7 +75,7 @@ app.post("/auth/login", async (req, res) => {
         return;
     }
 
-    const token = generateJWT(user, "30m");
+    const token = generateJWT(user);
     res.status(200).json({ token, user });
 });
 

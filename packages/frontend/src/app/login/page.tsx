@@ -1,6 +1,6 @@
 'use client';
 import React, { useState } from "react";
-import Form from "./form";
+import Form, { type Account } from "./form";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import type { UserWithId } from "../../../../backend/src/models/user";
@@ -9,17 +9,12 @@ export default function LoginPage() {
   const router = useRouter();
   const [error, setError] = useState<string | null>(null);
 
-  interface LoginData {
-    user: string;
-    password: string;
-  }
-
   interface AuthResponse {
     token: string;
     user: UserWithId
   }
 
-  async function authenticate(creds: LoginData): Promise<AuthResponse> {
+  async function authenticate(creds: Account, purpose: "login" | "register"): Promise<AuthResponse> {
       // Map frontend field names to what the backend expects
       const backendCreds = {
         username: creds.user,
@@ -27,7 +22,11 @@ export default function LoginPage() {
       };
 
       try {
-        const response = await fetch("http://localhost:8000/auth/login", {
+        // todo: make this an env variable
+        const baseUrl = "http://localhost:8000";
+        const urlEndpoint = purpose === "login" ? "/auth/login" : "/auth/register";
+
+        const response = await fetch(`${baseUrl}${urlEndpoint}`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json"
@@ -47,7 +46,7 @@ export default function LoginPage() {
       }
     }
 
-  const handleLogin = async (loginData: LoginData) => {
+  const handleSubmit = async (loginData: Account, purpose: "login" | "register") => {
       // Clear any previous errors
       setError(null);
 
@@ -59,7 +58,7 @@ export default function LoginPage() {
 
       try {
         // Attempt to authenticate with the backend
-        const authResponse = await authenticate(loginData);
+        const authResponse = await authenticate(loginData, purpose);
 
         // Store the JWT token in localStorage for later use in authenticated requests
         localStorage.setItem('authToken', authResponse.token);
@@ -67,7 +66,7 @@ export default function LoginPage() {
         // Store user info for use across the app
         localStorage.setItem('user', JSON.stringify(authResponse.user));
 
-        console.log("Login successful:", authResponse.user.username);
+        console.log(`${purpose} successful: (user ${authResponse.user.username})`);
 
         // Navigate to finds page after successful login
         router.push('/finds');
@@ -79,13 +78,8 @@ export default function LoginPage() {
 
   return (
     <div>
-        <Form handleSubmit={handleLogin} />
-          <p>{error}</p>
-          <Link href="/signup">
-        <button className="bg-white text-black p-3 rounded-lg mt-5">
-          Create an account
-        </button>
-      </Link>
+        <Form handleSubmit={handleSubmit} />
+        <p>{error}</p>
     </div>
   );
 }

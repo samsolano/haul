@@ -1,13 +1,13 @@
 'use client';
 import React, { useState } from "react";
 
-interface Account {
+export interface Account {
   user: string;
   password: string;
 }
 
 interface FormProps {
-  handleSubmit: (account: Account) => void;
+  handleSubmit: (account: Account, purpose: "login" | "register") => void;
 }
 
 function Form({ handleSubmit }: FormProps) {
@@ -27,8 +27,8 @@ function Form({ handleSubmit }: FormProps) {
         }));
     }
 
-    function submitForm() {
-        handleSubmit(account);
+    function submitForm(purpose: "login" | "register") {
+        handleSubmit(account, purpose);
         setAccount({ user: "", password: "" });
     }
 
@@ -56,13 +56,23 @@ function Form({ handleSubmit }: FormProps) {
                     className="border rounded w-full py-2 px-3 mb-3 leading-tight"
                 />
 
-                <button
-                    type="button"
-                    onClick={submitForm}
-                    className="bg-white text-black p-3 rounded-lg"
-                >
-                    Sign In
-                </button>
+                <div className="flex flex-row gap-2">
+                    <button
+                        type="button"
+                        onClick={() => submitForm("login")}
+                        className="bg-white text-black p-3 rounded-lg hover:cursor-pointer"
+                    >
+                        Sign In
+                    </button>
+
+                    <button
+                        type="button"
+                        onClick={() => submitForm("register")}
+                        className="bg-white text-black p-3 rounded-lg hover:cursor-pointer"
+                    >
+                        Create Account
+                    </button>
+                </div>
         </form>
     );
 }

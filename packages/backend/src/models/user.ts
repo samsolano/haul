@@ -1,13 +1,9 @@
 import mongoose, { type ObjectId } from "mongoose";
 import bcrypt from "bcrypt";
-import { Post, PostUnresolved } from "./post";
 
 const userSchema = new mongoose.Schema({
     username: { type: String, required: true, unique: true },
     password: { type: String, required: true },
-
-    posts: [{ type: mongoose.Schema.Types.ObjectId, ref: "Post", default: [] }],
-
     createdAt: { type: Date, default: Date.now },
 });
 
@@ -21,21 +17,9 @@ userSchema.pre("save", async function (next) {
     next();
 });
 
-export type UserUnresolved = {
-    username: string;
-    password: string;
-
-    posts: PostUnresolved[];
-
-    createdAt: Date;
-};
-
 export type User = {
     username: string;
     password: string;
-
-    posts: Post[];
-
     createdAt: Date;
 };
 

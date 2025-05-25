@@ -11,7 +11,7 @@ export async function findPostById(id: string): Promise<PostWithId | null> {
     return Post.findById(id)?.populate("author")?.populate("comments.author") as PostWithId | null;
 }
 
-export async function findPostsByAuthor(author: ObjectId): Promise<PostWithId | null> {
+export async function findPostsByAuthor(author: ObjectId): Promise<PostWithId[] | null> {
     // @ts-ignore: .populate doesn't properly manipulate the type.
     return Post.find({ author }).populate("author").populate("comments.author") as PostWithId | null;
 }

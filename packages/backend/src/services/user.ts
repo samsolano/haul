@@ -1,13 +1,11 @@
 import { User, UserWithId } from "../models/user";
 
 export async function findAllUsers(): Promise<UserWithId[]> {
-    // @ts-ignore: .populate doesn't properly manipulate the type.
-    return User.find().populate("posts.author").populate("posts.comments.author") as UserWithId[];
+    return User.find();
 }
 
 export async function findUserByName(username: string): Promise<UserWithId | null> {
-    // @ts-ignore: .populate doesn't properly manipulate the type.
-    return User.findOne({ username }).populate("posts.author").populate("posts.comments.author") as UserWithId | null;
+    return User.findOne({ username });
 }
 
 export async function createUser(username: string, password: string): Promise<UserWithId> {

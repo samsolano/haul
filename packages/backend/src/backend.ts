@@ -1,7 +1,11 @@
 import express, { NextFunction, Request, Response } from "express";
 import mongoose from "mongoose";
 import cors from "cors";
-import { createUser, findUserByName, generateJWT, isPasswordValid, verifyJWT } from "./services/user";
+
+import { createUser, findUserByName } from "./services/user";
+import { generateJWT, isPasswordValid, verifyJWT } from "./auth";
+import { createStore, findStoreByName } from "./services/store";
+import { createPost } from "./services/post";
 
 mongoose.set("debug", true);
 mongoose.connect(`${process.env.MONGO_CONNECTION_STRING}/MainDatabase`).catch((err) => {
@@ -102,5 +106,38 @@ app.get("/testNeedsAuth", authMiddleware, async (req, res) => {
 });
 
 app.listen(port, async () => {
+    // const store = await createStore({
+    //     name: "Test Store",
+    //     description: "This is a test store.",
+    //     address: "123 Test St, Test City, TC 12345",
+    //     phoneNumber: "123-456-7890",
+    //     websiteUrl: "https://example.com",
+    //     createdAt: new Date(),
+    // });
+
+    const targetUser = await findUserByName("foo");
+    if (!targetUser) {
+        console.error("Target user not found");
+        return;
+    }
+
+    // console.log(store.name, "created with ID:", store._id);
+
+    // const post = await createPost({
+    //     author: targetUser._id,
+    //     mainImageUrl: "https://example.com/image.jpg",
+    //     description: "This is a test post.",
+    //     comments: [
+    //         {
+    //             author: targetUser._id,
+    //             content: "This is a test comment.",
+    //             createdAt: new Date(),
+    //         }
+    //     ],
+    //     createdAt: new Date(),
+    // })
+
+    console.log(targetUser.posts);
+
     console.log(`Example app listening at http://localhost:${port}`);
 });

@@ -1,6 +1,7 @@
 import mongoose, { type ObjectId } from "mongoose";
 import bcrypt from "bcrypt";
 
+// MONGOOSE SCHEMA
 const userSchema = new mongoose.Schema({
     username: { type: String, required: true, unique: true },
     password: { type: String, required: true },
@@ -17,6 +18,7 @@ userSchema.pre("save", async function (next) {
     next();
 });
 
+//TYPESCRIPT SCHEMA
 export type User = {
     username: string;
     password: string;

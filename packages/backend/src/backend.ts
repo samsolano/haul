@@ -1,7 +1,9 @@
 import express, { NextFunction, Request, Response } from "express";
 import mongoose from "mongoose";
 import cors from "cors";
-import { createUser, findUserByName, generateJWT, isPasswordValid, verifyJWT } from "./services/user";
+
+import { createUser, findUserByName } from "./services/user";
+import { generateJWT, isPasswordValid, verifyJWT } from "./auth";
 
 mongoose.set("debug", true);
 mongoose.connect(`${process.env.MONGO_CONNECTION_STRING}/MainDatabase`).catch((err) => {

@@ -1,5 +1,6 @@
 import mongoose, { type ObjectId } from "mongoose";
 
+//MONGOOSE SCHEMA
 const storeSchema = new mongoose.Schema({
     name: { type: String, required: true, unique: true },
     description: { type: String, required: false },
@@ -11,6 +12,9 @@ const storeSchema = new mongoose.Schema({
     createdAt: { type: Date, default: Date.now },
 });
 
+export const Store = mongoose.model("Store", storeSchema, "Stores");
+
+//TYPESCRIPT SCHEMA
 export type Store = {
     name: string;
 
@@ -24,5 +28,3 @@ export type Store = {
 };
 
 export type StoreWithId = Store & { _id: ObjectId };
-
-export const Store = mongoose.model("Store", storeSchema, "Stores");

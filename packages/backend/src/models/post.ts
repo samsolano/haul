@@ -1,12 +1,26 @@
 import mongoose, { type ObjectId } from "mongoose";
 import { User } from "./user";
 
+//MONGOOSE SCHEMA
 const commentSchema = new mongoose.Schema({
     author: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
     content: { type: String, required: true },
     createdAt: { type: Date, default: Date.now },
 });
 
+const postSchema = new mongoose.Schema({
+    author: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
+
+    mainImageUrl: { type: String, required: true },
+    description: { type: String, required: true },
+    comments: { type: [commentSchema], default: [] },
+
+    createdAt: { type: Date, default: Date.now },
+});
+
+export const Post = mongoose.model("Post", postSchema, "Posts");
+
+//TYPESCRIPT SCHEMA
 export type CommentUnresolved = {
     author: ObjectId;
     content: string;
@@ -18,16 +32,6 @@ export type Comment = {
     content: string;
     createdAt: Date;
 }
-
-const postSchema = new mongoose.Schema({
-    author: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
-
-    mainImageUrl: { type: String, required: true },
-    description: { type: String, required: true },
-    comments: { type: [commentSchema], default: [] },
-
-    createdAt: { type: Date, default: Date.now },
-});
 
 export type PostUnresolved = {
     author: ObjectId;
@@ -50,5 +54,3 @@ export type Post = {
 };
 
 export type PostWithId = Post & { _id: ObjectId };
-
-export const Post = mongoose.model("Post", postSchema, "Posts");

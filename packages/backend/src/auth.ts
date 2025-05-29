@@ -24,12 +24,13 @@ export function generateJWT(user: UserWithId): string {
 export function verifyJWT(token: string): JWTData | null {
     try {
         return jwt.verify(token, jwtSecret as string) as JWTData;
-    } catch (err) {
+    } catch {
         return null;
     }
 }
 
 declare global {
+    // eslint-disable-next-line @typescript-eslint/no-namespace
     namespace Express {
         interface Request {
             _id?: JWTData["_id"];

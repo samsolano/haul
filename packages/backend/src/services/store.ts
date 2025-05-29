@@ -15,6 +15,6 @@ export async function findStoreByName(name: string): Promise<StoreWithId | null>
 export async function createStore(info: Store): Promise<StoreWithId> {
     const store = new Store(info);
 
-    // @ts-ignore: .save() doesn't add _id to the type.
+    // @ts-expect-error: .save() doesn't add _id to the type.
     return await store.save();
 }

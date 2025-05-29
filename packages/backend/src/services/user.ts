@@ -11,6 +11,6 @@ export async function findUserByName(username: string): Promise<UserWithId | nul
 export async function createUser(username: string, password: string): Promise<UserWithId> {
     const user = new User({ username, password });
 
-    // @ts-ignore: .save() doesn't add _id to the type.
+    // @ts-expect-error: .save() doesn't add _id to the type.
     return await user.save();
 }

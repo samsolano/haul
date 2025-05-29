@@ -11,8 +11,9 @@ jobs:
               with:
                 node-version: 20
 
+            # Using plain install since we don't use lockfiles.
             - name: Install dependencies
-              run: npm ci
+              run: npm i
 
             - name: Lint Backend
               run: npm run -w backend lint

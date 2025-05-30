@@ -1,7 +1,6 @@
 'use client';
 import React, { useState } from "react";
 import Form, { type Account } from "./form";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import type { UserWithId } from "../../../../backend/src/models/user";
 
@@ -26,25 +25,25 @@ export default function LoginPage() {
         const baseUrl = "http://localhost:8000";
         const urlEndpoint = purpose === "login" ? "/auth/login" : "/auth/register";
 
-        const response = await fetch(`${baseUrl}${urlEndpoint}`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify(backendCreds)
-        });
+      const response = await fetch(`${baseUrl}${urlEndpoint}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(backendCreds)
+      });
 
-        if (!response.ok) {
-          const errorText = await response.text();
-          throw new Error(errorText || `Server error: ${response.status}`);
-        }
-
-        return await response.json();
-      } catch (error) {
-        console.error("Authentication error:", error);
-        throw error;
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(errorText || `Server error: ${response.status}`);
       }
+
+      return await response.json();
+    } catch (error) {
+      console.error("Authentication error:", error);
+      throw error;
     }
+  }
 
   const handleSubmit = async (loginData: Account, purpose: "login" | "register") => {
       // Clear any previous errors
@@ -72,14 +71,21 @@ export default function LoginPage() {
         router.push('/finds');
 
       } catch (error) {
-          setError("Failed to login. Please check your credentials.");
+          console.error('Authentication error details:', error);
+          if (error instanceof Error) {
+              setError(error.message);
+          } else {
+              setError(purpose === "login" ? 
+                  "Failed to login. Please check your credentials." : 
+                  "Failed to create account. Please try again.");
+          }
       }
     };
 
   return (
     <div>
-        <Form handleSubmit={handleSubmit} />
-        <p>{error}</p>
+      <Form handleSubmit={handleSubmit} />
+      <p>{error}</p>
     </div>
   );
 }

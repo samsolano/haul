@@ -10,15 +10,11 @@ const commentSchema = new mongoose.Schema({
 
 const postSchema = new mongoose.Schema({
     author: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
-
     mainImageUrl: { type: String, required: true },
     description: { type: String, required: true },
     comments: { type: [commentSchema], default: [] },
-
     createdAt: { type: Date, default: Date.now },
 });
-
-export const Post = mongoose.model("Post", postSchema, "Posts");
 
 //TYPESCRIPT SCHEMA
 export type CommentUnresolved = {
@@ -35,22 +31,21 @@ export type Comment = {
 
 export type PostUnresolved = {
     author: ObjectId;
-
     mainImageUrl: string;
     description: string;
-    comments: CommentUnresolved[];
-
+    comments: Comment[] | CommentUnresolved[];
     createdAt: Date;
 }
 
 export type Post = {
     author: User;
-
     mainImageUrl: string;
     description: string;
     comments: Comment[];
-
     createdAt: Date;
 };
 
 export type PostWithId = Post & { _id: ObjectId };
+
+export const Post = mongoose.model<PostWithId>("Post", postSchema, "Posts");
+

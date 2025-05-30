@@ -11,8 +11,6 @@ import {
   isPasswordValid,
   verifyJWT
 } from "./auth";
-import { uploadBlob, downloadBlob, containerClient, STORAGE_CONTAINER } from "./azure";
-import { Readable } from "stream";
 
 mongoose.set("debug", true);
 mongoose
@@ -63,8 +61,8 @@ app.post("/auth/register", async (req, res) => {
     console.log("User created successfully:", username);
     const token = generateJWT(user);
     res.status(201).json({ token, user });
-  } catch (error) {
-    console.error("Error creating user:", error);
+  } catch (err) {
+    console.error("Error creating user:", err);
     res.status(500).send("Failed to create user");
   }
 });
@@ -134,66 +132,62 @@ app.get("/testNeedsAuth", authMiddleware, async (req, res) => {
   res.send(`You are authenticated as ${req._id}`);
 });
 
-// image upload endpoint
-app.post("/upload", (req: Request, res: Response) => {
-    if (!containerClient) {
-        res.status(503).json({ error: "Azure Storage not configured" });
-        return;
-    }
+// Removed /upload endpoint
+// app.post("/upload", (req: Request, res: Response) => {
+//     if (!containerClient) {
+//         res.status(503).json({ error: "Azure Storage not configured" });
+//         return;
+//     }
+//     try {
+//         const filename = (req.query.filename as string) || "upload";
+//         const blobname = `${Date.now()}-${filename}`;
+//         const blockBlobClient = containerClient.getBlockBlobClient(blobname);
+//         const stream = Readable.from(req.body);
+//         blockBlobClient.uploadStream(stream)
+//             .then(() => {
+//                 res.status(201).json({ url: `/images/${blobname}` });
+//             })
+//             .catch((error) => {
+//                 res.status(500).json({ 
+//                     message: "Failed to upload to blob storage",
+//                     error 
+//                 });
+//             });
+//     } catch (error) {
+//         res.status(500).json({ error: "Failed to process upload" });
+//     }
+// });
 
-    try {
-        const filename = (req.query.filename as string) || "upload";
-        const blobname = `${Date.now()}-${filename}`;
-        const blockBlobClient = containerClient.getBlockBlobClient(blobname);
-        
-        const stream = Readable.from(req.body);
-        
-        blockBlobClient.uploadStream(stream)
-            .then(() => {
-                res.status(201).json({ url: `/images/${blobname}` });
-            })
-            .catch((error) => {
-                res.status(500).json({ 
-                    message: "Failed to upload to blob storage",
-                    error 
-                });
-            });
-    } catch (error) {
-        res.status(500).json({ error: "Failed to process upload" });
-    }
-});
+// Removed /images/:blob endpoint
+// app.get("/images/:blob", (req: Request, res: Response) => {
+//     if (!containerClient) {
+//         res.status(503).json({ error: "Azure Storage not configured" });
+//         return;
+//     }
+//     const { blob } = req.params;
+//     const blockBlobClient = containerClient.getBlockBlobClient(blob);
+//     blockBlobClient.exists()
+//         .then((exists: boolean) => {
+//             if (!exists) {
+//                 res.status(404).send();
+//                 return;
+//             }
+//             return blockBlobClient.downloadToBuffer();
+//         })
+//         .then((buffer) => {
+//             if (buffer) res.send(buffer);
+//         })
+//         .catch((error) => {
+//             res.status(500).json({ 
+//                 message: "Failed to download from blob storage",
+//                 error 
+//             });
+//         });
+// });
 
-// image download endpoint
-app.get("/images/:blob", (req: Request, res: Response) => {
-    if (!containerClient) {
-        res.status(503).json({ error: "Azure Storage not configured" });
-        return;
-    }
-
-    const { blob } = req.params;
-    const blockBlobClient = containerClient.getBlockBlobClient(blob);
-
-    blockBlobClient.exists()
-        .then((exists: boolean) => {
-            if (!exists) {
-                res.status(404).send();
-                return;
-            }
-            return blockBlobClient.downloadToBuffer();
-        })
-        .then((buffer) => {
-            if (buffer) res.send(buffer);
-        })
-        .catch((error) => {
-            res.status(500).json({ 
-                message: "Failed to download from blob storage",
-                error 
-            });
-        });
-});
-
-app.post("/photos/upload", uploadBlob);
-app.get("/photos/download/:blob", downloadBlob);
+// Removed /photos/upload and /photos/download/:blob endpoints
+// app.post("/photos/upload", uploadBlob);
+// app.get("/photos/download/:blob", downloadBlob);
 
 app.listen(port, () => {
     console.log(`Server running at http://localhost:${port}`);

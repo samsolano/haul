@@ -8,13 +8,36 @@ export default function Navbar() {
     const pathname = usePathname();
     const [username, setUsername] = useState<string | null>(null);
 
-    useEffect(() => {
-        // Get user info from localStorage
+    const updateUserInfo = () => {
         const userStr = localStorage.getItem('user');
         if (userStr) {
             const user = JSON.parse(userStr);
             setUsername(user.username);
+        } else {
+            setUsername(null);
         }
+    };
+
+    useEffect(() => {
+        updateUserInfo();
+
+        const handleStorageChange = (e: StorageEvent) => {
+            if (e.key === 'user') {
+                updateUserInfo();
+            }
+        };
+
+        const handleLogin = () => {
+            updateUserInfo();
+        };
+
+        window.addEventListener('storage', handleStorageChange);
+        window.addEventListener('userLogin', handleLogin);
+
+        return () => {
+            window.removeEventListener('storage', handleStorageChange);
+            window.removeEventListener('userLogin', handleLogin);
+        };
     }, []);
 
     const handleLogout = () => {

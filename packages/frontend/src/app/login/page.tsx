@@ -67,6 +67,9 @@ export default function LoginPage() {
 
         console.log(`${purpose} successful: (user ${authResponse.user.username})`);
 
+        // Dispatch login event for navbar update
+        window.dispatchEvent(new Event('userLogin'));
+
         // Navigate to finds page after successful login
         router.push('/finds');
 

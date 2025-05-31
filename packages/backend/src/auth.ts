@@ -1,6 +1,6 @@
 // Auth utilities
 import * as bcrypt from "bcrypt";
-import * as jwt from "jsonwebtoken";
+import jwt from "jsonwebtoken";
 
 import type { User, UserWithId } from "./models/user";
 

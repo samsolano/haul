@@ -57,6 +57,11 @@ export default function Navbar() {
             <div className="text-xl ml-auto mr-4.5 flex gap-6 items-center">
                 {username ? (
                     <>
+                         <Link href="/trends">
+                          <button className={pathname === '/trends' ? 'font-bold' : 'font-normal'}>
+                          TRENDS
+                          </button>
+                      </Link>
                         <Link href="/finds">
                             <button className={pathname === '/finds' ? 'font-bold' : 'font-normal'}>
                                 FINDS

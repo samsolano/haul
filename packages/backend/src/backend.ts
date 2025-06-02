@@ -189,6 +189,9 @@ app.get("/testNeedsAuth", authMiddleware, async (req, res) => {
 // app.post("/photos/upload", uploadBlob);
 // app.get("/photos/download/:blob", downloadBlob);
 
-app.listen(port, () => {
-    console.log(`Server running at http://localhost:${port}`);
+// app.listen(port, () => {
+//     console.log(`Server running at http://localhost:${port}`);
+// });
+app.listen(process.env.PORT || port, () => {
+  console.log("REST API is listening.");
 });

@@ -1,4 +1,4 @@
-import mongoose, { type ObjectId } from "mongoose";
+import { ObjectId } from "mongoose";
 
 //TYPESCRIPT SCHEMA
 export type User = {

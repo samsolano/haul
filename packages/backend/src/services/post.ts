@@ -1,5 +1,6 @@
 import { ObjectId } from "mongoose";
-import { Post, PostUnresolved, PostWithId } from "../models/post";
+import { Post } from "@backend/src/models/post";
+import { PostUnresolved, PostWithId } from "@common/types/post";
 
 export async function findAllPosts(): Promise<PostWithId[]> {
     // @ts-expect-error: .populate doesn't properly manipulate the type.

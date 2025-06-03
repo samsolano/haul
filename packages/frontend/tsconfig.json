@@ -8,8 +8,10 @@
         "name": "next"
       }
     ],
+    "baseUrl": "./src", 
     "paths": {
-      "@/*": ["./src/*"] // ✅ Keeps frontend-only alias
+      "@/*": ["*"],
+      "@common/*": ["../../common/*"]
     }
   },
   "include": [

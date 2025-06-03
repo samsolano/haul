@@ -1,4 +1,7 @@
-import Link from "next/link";
+'use client';
+import { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 
 export default function dashboard() {
   return (
@@ -7,7 +10,7 @@ export default function dashboard() {
 
       <Link href="/finds">
         <button className="bg-white text-black p-3 rounded-lg mt-40">
-          Go to mainpage
+          Enter
         </button>
       </Link>
     </div>

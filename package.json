@@ -5,7 +5,9 @@
   "scripts": {
     "frontend:dev": "npm run -w frontend dev",
     "backend:dev": "npm run -w backend dev",
-    "format": "prettier --write './**/*.{js,jsx,ts,tsx,css,md,json}' --config ./.prettierrc"
+    "format": "prettier --write './**/*.{js,jsx,ts,tsx,css,md,json}' --config ./.prettierrc",
+    "build": "npm run -w frontend build",
+    "postbuild": "cp -r packages/frontend/.next dist"
   },
   "author": "",
   "license": "ISC",

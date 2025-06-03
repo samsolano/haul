@@ -36,7 +36,7 @@ function CommentSection(props: { comments: CommentInfo[] }) {
         Comments
       </h1>
 
-      <div className="flex flex-col gap-2 md:gap-4">
+      <div className="flex flex-col gap-2 md:gap-4 h-36 md:h-96 overflow-y-auto">
         {props.comments.map((comment, index) => (
           <Comment comment={comment} key={index}/>
         ))}
@@ -92,14 +92,14 @@ function DescriptionSection(props: { description: string }) {
 
 function Post(props: { post: PostInfo }) {
   return (
-    <div className="px-1 md:p-8 md:h-[640px] flex flex-col items-center">
+    <div className="px-4 md:p-8 md:h-[640px] flex flex-col items-center">
       <div className="hidden md:flex flex-row gap-8 h-full w-full rounded-lg p-2 py-4 md:max-w-5xl md:max-w-7xl xl:max-w-[1920px]">
         <CommentSection comments={props.post.comments}/>
         <ImageSection authorUsername={props.post.authorUsername} postImage={props.post.imageUrl}/>
         <DescriptionSection description={props.post.description}/>
       </div>
 
-      <div className="flex md:hidden flex-col w-full">
+      <div className="flex md:hidden flex-col w-full max-w-md mx-auto">
         <ImageSection authorUsername={props.post.authorUsername} postImage={props.post.imageUrl} />
         <DescriptionSection description={props.post.description} />
         <CommentSection comments={props.post.comments} />

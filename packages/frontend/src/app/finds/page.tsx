@@ -13,7 +13,7 @@ type StoreInfo = {
 type PostInfo = {
   authorUsername: string;
   description: string;
-  imageUrl: string;
+  imageUrl?: string;
   linkedStore?: StoreInfo;
 
   comments: CommentInfo[];
@@ -21,8 +21,8 @@ type PostInfo = {
 
 function Comment(props: { comment: CommentInfo }) {
   return (
-    <div>
-      <h1>{props.comment.authorUsername}</h1>
+    <div className="bg-gray-700 p-4 rounded-lg">
+      <h1 className="font-semibold italic">{props.comment.authorUsername}</h1>
       <p>{props.comment.content}</p>
     </div>
   )
@@ -31,8 +31,8 @@ function Comment(props: { comment: CommentInfo }) {
 function CommentSection(props: { comments: CommentInfo[] }) {
 
   return (
-    <div className="h-full pt-20 w-1/4">
-      <h1 className="text-xl text-black dark:text-white font-medium underline">
+    <div className="h-full pt-20 gap-2 flex flex-col w-1/4">
+      <h1 className="text-xl text-black dark:text-white font-bold">
         Comments
       </h1>
 
@@ -40,15 +40,19 @@ function CommentSection(props: { comments: CommentInfo[] }) {
         {props.comments.map((comment, index) => (
           <Comment comment={comment} key={index}/>
         ))}
+
+        {props.comments.length === 0 && (
+          <p className="italic text-gray-400">No comments yet.</p>
+        )}
       </div>
     </div>
   )
 }
 
-function ImageSection(props: { authorUsername: string, postImage: string }) {
+function ImageSection(props: { authorUsername: string, postImage?: string }) {
   return (
-    <div className="w-2/4">
-      <div className="flex flex-col gap-2">
+    <div className="w-2/4 bg-gray-700 p-4 rounded-lg">
+      <div className="flex flex-col h-full gap-2">
         <div className="flex flex-row items-center gap-2">
           <div className="rounded-full bg-gray-500 size-8" />
 
@@ -57,7 +61,19 @@ function ImageSection(props: { authorUsername: string, postImage: string }) {
           </div>
         </div>
 
-        <img src={props.postImage} className="min-h-full bg-gray-500" />
+        {(() => {
+          if (!props.postImage) {
+            return (
+              <div className="h-full flex flex-col items-center justify-center rounded-lg">
+                No image attached.
+              </div>
+            )
+          }
+
+          return (
+            <img src={props.postImage} className="h-full bg-gray-500 rounded-lg" />
+          )
+        })()}
       </div>
     </div>
   )
@@ -65,17 +81,19 @@ function ImageSection(props: { authorUsername: string, postImage: string }) {
 
 function DescriptionSection(props: { description: string }) {
   return (
-    <div className="w-1/4 h-full">
-      <h1>Post Description</h1>
-      <p>{props.description}</p>
+    <div className="w-1/4 flex flex-col gap-2 h-full">
+      <h1 className="font-bold text-lg">Description</h1>
+      <p className="bg-gray-700 p-2 rounded-lg min-h-1/2">
+        {props.description}
+      </p>
     </div>
   );
 }
 
 function Post(props: { post: PostInfo }) {
   return (
-    <div className="p-8 min-h-screen flex flex-col items-center">
-      <div className="flex flex-row gap-8 w-full md:max-w-5xl lg:max-w-7xl xl:max-w-[1920px] bg-yellow-500">
+    <div className="p-8 h-screen flex flex-col items-center">
+      <div className="flex flex-row gap-8 h-full w-full rounded-lg p-2 py-4 md:max-w-5xl lg:max-w-7xl xl:max-w-[1920px]">
         <CommentSection comments={props.post.comments}/>
         <ImageSection authorUsername={props.post.authorUsername} postImage={props.post.imageUrl}/>
         <DescriptionSection description={props.post.description}/>
@@ -88,20 +106,25 @@ export default function Finds() {
   const templateImage = "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b3/Apple_Blossom_%40_Manali.jpg/960px-Apple_Blossom_%40_Manali.jpg";
 
   const posts: PostInfo[] = [
-    { authorUsername: "test", imageUrl: templateImage, comments: [], description: "Hi" },
+    { authorUsername: "test", imageUrl: templateImage, comments: [
+      {
+        authorUsername: "foo",
+        content: "This is a comment on the post.",
+      }
+    ], description: "Hi" },
     { authorUsername: "foo", imageUrl: templateImage, comments: [], description: "Hello" },
-    { authorUsername: "bar", imageUrl: templateImage, comments: [], description: "World" },
+    { authorUsername: "bar", comments: [], description: "World" },
   ];
 
   return (
-    <div className="flex flex-col justify-center bg-red-500 gap-4">
+    <div className="flex flex-col justify-center bg-gray-600">
       {posts.map((post, index) => {
         const isLast = index === posts.length - 1;
 
         return (
           <div key={index}>
             <Post post={post} />
-            {!isLast && <hr className="border-t border-gray-300 mt-4" />}
+            {!isLast && <hr className="border-t border-gray-300" />}
           </div>
         );
       })}

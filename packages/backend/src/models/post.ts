@@ -1,5 +1,4 @@
 import mongoose, { type ObjectId } from "mongoose";
-import { User } from "./user";
 
 //MONGOOSE SCHEMA
 const commentSchema = new mongoose.Schema({
@@ -19,38 +18,3 @@ const postSchema = new mongoose.Schema({
 });
 
 export const Post = mongoose.model("Post", postSchema, "Posts");
-
-//TYPESCRIPT SCHEMA
-export type CommentUnresolved = {
-    author: ObjectId;
-    content: string;
-    createdAt: Date;
-}
-
-export type Comment = {
-    author: User;
-    content: string;
-    createdAt: Date;
-}
-
-export type PostUnresolved = {
-    author: ObjectId;
-
-    mainImageUrl: string;
-    description: string;
-    comments: CommentUnresolved[];
-
-    createdAt: Date;
-}
-
-export type Post = {
-    author: User;
-
-    mainImageUrl: string;
-    description: string;
-    comments: Comment[];
-
-    createdAt: Date;
-};
-
-export type PostWithId = Post & { _id: ObjectId };

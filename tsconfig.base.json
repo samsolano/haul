@@ -1,0 +1,21 @@
+{
+  "compilerOptions": {
+    "target": "ESNext",
+    "lib": ["dom", "dom.iterable", "esnext"],
+    "allowJs": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "esModuleInterop": true,
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "incremental": true,
+    "baseUrl": ".", // Monorepo root
+    "paths": {
+      "@common/*": ["packages/common/*"],
+      "@backend/*": ["packages/backend/*"],
+      "@frontend/*": ["packages/frontend/*"]
+    }
+  }
+}

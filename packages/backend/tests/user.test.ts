@@ -222,8 +222,6 @@ describe('User Schema Tests', () => {
 
 describe("User Services Tests", () => {
   let mongoTestServer: MongoMemoryServer;
-  let testUserId: mongoose.Types.ObjectId;
-  let secondUserId: mongoose.Types.ObjectId;
 
   // Setup test database connection
   beforeAll(async () => {
@@ -250,15 +248,13 @@ describe("User Services Tests", () => {
       username: 'testuser',
       password: 'password123'
     });
-    const savedUser = await testUser.save();
-    testUserId = savedUser._id;
+    await testUser.save();
 
     const secondUser = new User({
       username: 'seconduser',
       password: 'password456'
     });
-    const savedSecondUser = await secondUser.save();
-    secondUserId = savedSecondUser._id;
+    await secondUser.save();
   });
 
   describe('findAllUsers', () => {

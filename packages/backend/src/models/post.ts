@@ -1,4 +1,4 @@
-import mongoose, { type ObjectId } from "mongoose";
+import mongoose from "mongoose";
 
 //MONGOOSE SCHEMA
 const commentSchema = new mongoose.Schema({

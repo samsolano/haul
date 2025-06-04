@@ -1,6 +1,5 @@
 import { generateJWT, hashPassword, isPasswordValid, verifyJWT } from "@backend/src/auth";
-import { User } from "@backend/src/models/user";
-import { UserWithId } from "@common/types/user";
+import { User, UserWithId } from "@backend/src/models/user";
 import { Schema } from "mongoose";
 
 describe("auth", () => {
@@ -47,6 +46,7 @@ describe("auth", () => {
             delete process.env.JWT_SECRET;
 
             expect(() => {
+                // eslint-disable-next-line @typescript-eslint/no-require-imports
                 require("@backend/src/auth");
             }).toThrow("JWT_SECRET is not set");
         });

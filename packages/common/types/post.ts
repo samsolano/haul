@@ -1,9 +1,9 @@
+import mongoose from "mongoose";
 import { User } from "./user";
-import type { ObjectId } from "mongoose";
 
 //TYPESCRIPT SCHEMA
 export type CommentUnresolved = {
-    author: ObjectId;
+    author: mongoose.Types.ObjectId;
     content: string;
     createdAt: Date;
 }
@@ -15,13 +15,13 @@ export type Comment = {
 }
 
 export type PostUnresolved = {
-    author: ObjectId;
+    author: mongoose.Types.ObjectId;
 
     mainImageUrl: string;
     description: string;
-    comments: CommentUnresolved[];
+    comments?: CommentUnresolved[];
 
-    createdAt: Date;
+    createdAt?: Date;
 }
 
 export type Post = {
@@ -34,4 +34,4 @@ export type Post = {
     createdAt: Date;
 };
 
-export type PostWithId = Post & { _id: ObjectId };
+export type PostWithId = Post & { _id: mongoose.Types.ObjectId };

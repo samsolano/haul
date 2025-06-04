@@ -631,13 +631,13 @@ describe("Post Services Tests", () => {
 
   describe('createPost', () => {
     test('should create post with valid data', async () => {
-      const postData = {
+      const postData: PostUnresolved = {
         author: testUserId,
         mainImageUrl: 'https://example.com/image.jpg',
         description: 'Test post description'
       };
 
-      const createdPost = await createPost(postData as any);
+      const createdPost = await createPost(postData);
 
       expect(createdPost).toBeDefined();
       expect(createdPost._id).toBeDefined();
@@ -649,7 +649,7 @@ describe("Post Services Tests", () => {
     });
 
     test('should create post with comments', async () => {
-      const postData = {
+      const postData: PostUnresolved = {
         author: testUserId,
         mainImageUrl: 'https://example.com/image.jpg',
         description: 'Post with initial comments',
@@ -667,7 +667,7 @@ describe("Post Services Tests", () => {
         ]
       };
 
-      const createdPost = await createPost(postData as any);
+      const createdPost = await createPost(postData);
 
       expect(createdPost).toBeDefined();
       expect(createdPost._id).toBeDefined();
@@ -685,7 +685,8 @@ describe("Post Services Tests", () => {
         // missing author
       };
 
-      await expect(createPost(invalidPostData as any)).rejects.toThrow();
+      // @ts-expect-error - the data is intentionally invalid
+      await expect(createPost(invalidPostData)).rejects.toThrow();
     });
 
     test('should fail to create post with invalid author ObjectId', async () => {
@@ -695,17 +696,18 @@ describe("Post Services Tests", () => {
         description: 'Invalid author ID'
       };
 
-      await expect(createPost(invalidPostData as any)).rejects.toThrow();
+      // @ts-expect-error - the data is intentionally invalid
+      await expect(createPost(invalidPostData)).rejects.toThrow();
     });
 
     test('should set default values correctly', async () => {
-      const postData = {
+      const postData: PostUnresolved = {
         author: testUserId,
         mainImageUrl: 'https://example.com/image.jpg',
-        description: 'Test description'
+        description: 'Test description',
       };
 
-      const createdPost = await createPost(postData as any);
+      const createdPost = await createPost(postData);
 
       expect(createdPost.comments).toEqual([]);
       expect(createdPost.createdAt).toBeInstanceOf(Date);
@@ -717,13 +719,15 @@ describe("Post Services Tests", () => {
     });
 
     test('should persist post to database', async () => {
-      const postData = {
+      const postData: PostUnresolved = {
         author: testUserId,
         mainImageUrl: 'https://example.com/image.jpg',
-        description: 'Persistence test'
+        description: 'Persistence test',
+        createdAt: new Date(),
+        comments: []
       };
 
-      const createdPost = await createPost(postData as any);
+      const createdPost = await createPost(postData);
 
       // Verify post exists in database
       const foundPost = await Post.findById(createdPost._id);

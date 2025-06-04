@@ -1,5 +1,5 @@
 import mongoose, { type ObjectId } from "mongoose";
-import bcrypt from "bcrypt";
+import { hashPassword } from "../auth";
 
 // MONGOOSE SCHEMA
 const userSchema = new mongoose.Schema({
@@ -14,7 +14,7 @@ userSchema.pre("save", async function (next) {
         return next();
     }
 
-    this.password = await bcrypt.hash(this.password, 10);
+    this.password = await hashPassword(this.password);
     next();
 });
 

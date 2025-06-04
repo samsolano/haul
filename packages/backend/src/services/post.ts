@@ -1,6 +1,6 @@
-import { ObjectId } from "mongoose";
 import { Post } from "@backend/src/models/post";
 import { PostUnresolved, PostWithId } from "@common/types/post";
+import mongoose from "mongoose";
 
 export async function findAllPosts(): Promise<PostWithId[]> {
     // @ts-expect-error: .populate doesn't properly manipulate the type.
@@ -12,7 +12,7 @@ export async function findPostById(id: string): Promise<PostWithId | null> {
     return Post.findById(id)?.populate("author")?.populate("comments.author") as PostWithId | null;
 }
 
-export async function findPostsByAuthor(author: ObjectId): Promise<PostWithId[] | null> {
+export async function findPostsByAuthor(author: mongoose.Types.ObjectId): Promise<PostWithId[] | null> {
     // @ts-expect-error: .populate doesn't properly manipulate the type.
     return Post.find({ author }).populate("author").populate("comments.author") as PostWithId | null;
 }

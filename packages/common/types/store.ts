@@ -1,4 +1,4 @@
-import { ObjectId } from "mongoose";
+import mongoose from "mongoose";
 
 //TYPESCRIPT SCHEMA
 export type Store = {
@@ -13,4 +13,4 @@ export type Store = {
     createdAt: Date;
 };
 
-export type StoreWithId = Store & { _id: ObjectId };
+export type StoreWithId = Store & { _id: mongoose.Types.ObjectId };

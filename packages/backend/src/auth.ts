@@ -4,6 +4,10 @@ import jwt from "jsonwebtoken";
 
 import type { User, UserWithId } from "./models/user";
 
+export async function hashPassword(password: string): Promise<string> {
+    return await bcrypt.hash(password, 10);
+}
+
 export async function isPasswordValid(user: User, password: string): Promise<boolean> {
     return await bcrypt.compare(password, user.password);
 }

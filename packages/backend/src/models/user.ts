@@ -1,4 +1,4 @@
-import mongoose, { type ObjectId } from "mongoose";
+import mongoose from "mongoose";
 import { hashPassword } from "../auth";
 
 // MONGOOSE SCHEMA

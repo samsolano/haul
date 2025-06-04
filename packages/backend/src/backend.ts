@@ -11,7 +11,6 @@ import {
   isPasswordValid,
   verifyJWT
 } from "./auth";
-import { UserWithId } from "@common/types/user";
 
 mongoose.set("debug", true);
 mongoose

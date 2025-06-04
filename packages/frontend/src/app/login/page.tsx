@@ -22,7 +22,7 @@ export default function LoginPage() {
 
       try {
         // todo: make this an env variable
-        const baseUrl = process.env.NEXT_PUBLIC_BACKEND_URL!;
+        const baseUrl = "haul-backend-dvbsd2fufcafhsc4.westus-01.azurewebsites.net";
         const urlEndpoint = purpose === "login" ? "/auth/login" : "/auth/register";
       console.log("Using backend URL:", baseUrl);
 

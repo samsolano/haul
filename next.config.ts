@@ -19,6 +19,8 @@ const nextConfig: NextConfig = {
   experimental: {
     externalDir: true,  // Support external directories
   },
+  
+  reactStrictMode: true,
 };
 
 export default nextConfig;

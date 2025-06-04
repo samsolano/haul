@@ -5,9 +5,11 @@
   "scripts": {
     "frontend:dev": "npm run -w frontend dev",
     "backend:dev": "npm run -w backend dev",
+    "frontend:test": "npm run -w frontend test",
+    "backend:test": "npm run -w backend test",
     "format": "prettier --write './**/*.{js,jsx,ts,tsx,css,md,json}' --config ./.prettierrc",
-  "build": "npm run -w frontend build",
-  "postbuild": "rm -rf packages/frontend/dist && cp -r packages/frontend/.next packages/frontend/dist"
+    "build": "npm run -w frontend build",
+    "postbuild": "rm -rf packages/frontend/dist && cp -r packages/frontend/.next packages/frontend/dist"
   },
   "author": "",
   "license": "ISC",

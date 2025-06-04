@@ -5,12 +5,14 @@ import express, {
 } from "express";
 import mongoose from "mongoose";
 import cors from "cors";
-import { createUser, findUserByName } from "./services/user";
+import { createUser, findAllUsers, findUserById, findUserByName } from "./services/user";
 import {
   generateJWT,
   isPasswordValid,
   verifyJWT
 } from "./auth";
+import { findAllStores, findStoreById } from "./services/store";
+import { findAllPosts, findPostById } from "./services/post";
 
 mongoose.set("debug", true);
 mongoose
@@ -112,7 +114,6 @@ app.post("/auth/login", async (req, res) => {
 
   const token = generateJWT({ ...user, _id: new mongoose.Types.ObjectId(user._id) });
   res.status(200).json({ token, user });
-  res.status(200).json({ token, user });
 });
 
 const authMiddleware = (
@@ -137,8 +138,67 @@ const authMiddleware = (
   next();
 };
 
-app.get("/testNeedsAuth", authMiddleware, async (req, res) => {
+app.get("/auth/test", authMiddleware, async (req, res) => {
   res.send(`You are authenticated as ${req._id}`);
+});
+
+app.get("/api/users", async (req, res) => {
+  const allUsers = await findAllUsers();
+  for (const user of allUsers) {
+    // @ts-expect-error
+    user.password = undefined; // Remove password from response
+  }
+
+  res.status(200).json(allUsers);
+});
+
+app.get("/api/users/:id", async (req, res) => {
+  const { id } = req.params;
+
+  const user = await findUserById(id);
+  if (!user) {
+    res.status(404).send("User not found");
+    return;
+  }
+
+  // @ts-expect-error
+  user.password = undefined;
+
+  res.status(200).json(user);
+});
+
+app.get("/api/stores", authMiddleware, async (req, res) => {
+  const allStores = await findAllStores();
+  res.status(200).json(allStores);
+});
+
+app.get("/api/stores/:storeId", authMiddleware, async (req, res) => {
+  const { storeId } = req.params;
+
+  const out = await findStoreById(storeId);
+  if (!out) {
+    res.status(404).send("Store not found");
+    return;
+  }
+
+  res.status(200).json(out);
+});
+
+app.get("/api/posts", authMiddleware, async (req, res) => {
+  const allPosts = await findAllPosts();
+  res.status(200).json(allPosts);
+});
+
+app.get("/api/posts/:postId", authMiddleware, async (req, res) => {
+  const { postId } = req.params;
+
+  const out = await findPostById(postId);
+  if (!out) {
+    res.status(404).send("Post not found");
+    return;
+  }
+
+  res.status(200).json(out);
 });
 
 // Removed /upload endpoint
@@ -201,6 +261,7 @@ app.get("/testNeedsAuth", authMiddleware, async (req, res) => {
 // app.listen(port, () => {
 //     console.log(`Server running at http://localhost:${port}`);
 // });
+
 app.listen(process.env.PORT || port, () => {
-  console.log("REST API is listening.");
+  console.log(`REST API is listening at http://localhost:${process.env.PORT || port}.`);
 });

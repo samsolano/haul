@@ -2,84 +2,30 @@
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import { UserProfile } from "@/types";
+import { useCredentials } from "@/hooks/useCredentials";
+import { useUserInfo } from "@/hooks/useUserInfo";
 
 export default function Page() {
   const [profile, setProfile] = useState<UserProfile | null>(null);
-  const [loading, setLoading] = useState(true);
+
+  const { userId, jwt } = useCredentials();
+  const { user, loading } = useUserInfo(userId);
 
   useEffect(() => {
-    const fetchProfile = async () => {
-      try {
-        // TODO: Replace with actual API call
-        const exampleProfile: UserProfile = {
-          username: "strawberrythrift123",
-          avatar: "/default-avatar.png",
-          bio: "I love clothing!",
-          stats: {
-            posts: 17,
-            followers: 100,
-            following: 215
-          },
-          finds: [
-            {
-              id: "1",
-              imageUrl: "/placeholder-find.jpg",
-              title: "Vintage Denim Jacket",
-              price: 25.99,
-              location: "ThriftStore NYC",
-              createdAt: new Date().toISOString()
-            },
-            {
-              id: "2",
-              imageUrl: "/placeholder-find2.jpg",
-              title: "Retro Floral Dress",
-              price: 30.00,
-              location: "ThriftStore LA",
-              createdAt: new Date().toISOString()
-            },
-            {
-              id: "3",
-              imageUrl: "/placeholder-find3.jpg",
-              title: "Classic Leather Boots",
-              price: 45.50,
-              location: "ThriftStore SF",
-              createdAt: new Date().toISOString()
-            }
-          ],
-          savedStores: [
-            {
-              id: "1",
-              name: "Vintage Treasures",
-              location: "Brooklyn, NY",
-              rating: 4.5,
-              imageUrl: "/store-placeholder.jpg"
-            },
-            {
-              id: "2",
-              name: "Retro Finds",
-              location: "Los Angeles, CA",
-              rating: 4.7,
-              imageUrl: "/store-placeholder2.jpg"
-            },
-            {
-              id: "3",
-              name: "Thrift Haven",
-              location: "San Francisco, CA",
-              rating: 4.8,
-              imageUrl: "/store-placeholder3.jpg"
-            }
-          ]
-        };
-        setProfile(exampleProfile);
-        setLoading(false);
-      } catch (error) {
-        console.error('Error fetching profile:', error);
-        setLoading(false);
-      }
-    };
+    if (!user) {
+      setProfile(null);
+      return;
+    }
 
-    fetchProfile();
-  }, []);
+    const profile: UserProfile = {
+      username: user.username,
+      finds: [],
+      stats: { followers: 0, following: 0, posts: 0 },
+      savedStores: [],
+    }
+
+    setProfile(profile);
+  }, [user]);
 
   if (loading) {
     return <div className="p-4">Loading...</div>;
@@ -108,7 +54,7 @@ export default function Page() {
             <p className="text-gray-600">{profile.bio}</p>
           </div>
         </div>
-        
+
         <div className="flex justify-around mt-6 border-t border-b py-4">
           <div className="text-center">
             <div className="font-bold">{profile.stats.posts}</div>

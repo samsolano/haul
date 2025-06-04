@@ -1,4 +1,10 @@
-import React from "react";
+'use client';
+
+import { useCredentials } from "@/hooks/useCredentials";
+import { useUserInfo } from "@/hooks/useUserInfo";
+import { fetchWithAuth } from "@/lib/auth";
+import React, { useEffect, useState } from "react";
+import type { Post } from "@common/types/post";
 
 type CommentInfo = {
   authorUsername: string;
@@ -109,18 +115,48 @@ function Post(props: { post: PostInfo }) {
 }
 
 export default function Finds() {
-  const templateImage = "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b3/Apple_Blossom_%40_Manali.jpg/960px-Apple_Blossom_%40_Manali.jpg";
+  const { userId, jwt, isLoggedIn } = useCredentials();
+  const { user, loading } = useUserInfo(userId);
 
-  const posts: PostInfo[] = [
-    { authorUsername: "test", imageUrl: templateImage, comments: [
-      {
-        authorUsername: "foo",
-        content: "This is a comment on the post.",
+  const [posts, setPosts] = useState<PostInfo[]>([]);
+
+  useEffect(() => {
+    if (!userId || !jwt) {
+      setPosts([]);
+      return;
+    }
+
+    const fetchPosts = async () => {
+      try {
+        const response = await fetchWithAuth(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/posts`, jwt);
+        if (!response.ok) {
+          throw new Error(`Error fetching posts: ${response.statusText}`);
+        }
+
+        const data: Post[] = await response.json();
+
+        // Transform the data to match PostInfo type
+        const transformed = data.map(post => ({
+          authorUsername: post.author.username,
+          description: post.description,
+          imageUrl: post.mainImageUrl,
+          comments: post.comments.map(comment => ({
+            authorUsername: comment.author.username,
+            content: comment.content,
+          })),
+        }));
+
+        setPosts(transformed);
+      } catch (error) {
+        console.error("Error fetching posts:", error);
+        setPosts([]);
       }
-    ], description: "Hi" },
-    { authorUsername: "foo", imageUrl: templateImage, comments: [], description: "Hello" },
-    { authorUsername: "bar", comments: [], description: "World" },
-  ];
+    };
+
+    fetchPosts();
+  }, [userId]);
+
+  // const templateImage = "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b3/Apple_Blossom_%40_Manali.jpg/960px-Apple_Blossom_%40_Manali.jpg";
 
   return (
     <div className="flex flex-col justify-center">

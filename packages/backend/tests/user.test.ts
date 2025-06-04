@@ -2,7 +2,6 @@ import { User } from "@backend/src/models/user";
 import { hashPassword } from "@backend/src/auth";
 import * as userServices from "@backend/src/services/user";
 import mongoose from 'mongoose';
-import { MongoMemoryServer } from 'mongodb-memory-server';
 
 // Mock the hashPassword function
 jest.mock('@backend/src/auth', () => ({
@@ -11,29 +10,22 @@ jest.mock('@backend/src/auth', () => ({
 
 const mockedHashPassword = hashPassword as jest.MockedFunction<typeof hashPassword>;
 
+beforeAll(async () => {
+  await mongoose.connect(process.env.MONGO_TEST_URI!);
+});
+
+beforeEach(async () => {
+  const collections = mongoose.connection.collections;
+  for (const key in collections) {
+    await collections[key].deleteMany({});
+  }
+});
+
+afterAll(async () => {
+  await mongoose.connection.close();
+});
+
 describe('User Schema Tests', () => {
-  let mongoTestServer: MongoMemoryServer;
-
-    // Setup test database connection
-  beforeAll(async () => {
-    mongoTestServer = await MongoMemoryServer.create();
-    const mongoUri = mongoTestServer.getUri();
-    await mongoose.connect(mongoUri);
-  });
-
-  afterAll(async () => {
-    await mongoose.connection.dropDatabase();
-    await mongoose.connection.close();
-    await mongoTestServer.stop();
-  });
-
-  beforeEach(async () => {
-    // Clear the collection before each test
-    await User.deleteMany({});
-    // Reset mocks
-    jest.clearAllMocks();
-  });
-
   describe('Schema Validation', () => {
     test('should create user with valid data', async () => {
       const userData = {
@@ -95,7 +87,8 @@ describe('User Schema Tests', () => {
       // Try to create second user with same username
       const user2 = new User(userData);
 
-      await expect(user2.save()).rejects.toThrow();
+      // The duplicate username should cause a MongoDB duplicate key error
+      await expect(user2.save()).rejects.toThrow(/duplicate key|E11000/);
     });
 
     test('should set createdAt to current date by default', async () => {
@@ -118,6 +111,12 @@ describe('User Schema Tests', () => {
 
   describe('Password Hashing Pre-save Hook', () => {
     test('should hash password before saving new user', async () => {
+      // Clear all existing users first
+      await User.deleteMany({});
+      
+      // Clear mock call history from any previous operations
+      mockedHashPassword.mockClear();
+      
       const plainPassword = 'myplainpassword';
       const hashedPassword = 'hashed_myplainpassword';
 
@@ -221,24 +220,7 @@ describe('User Schema Tests', () => {
 });
 
 describe("User Services Tests", () => {
-  let mongoTestServer: MongoMemoryServer;
-
-  // Setup test database connection
-  beforeAll(async () => {
-    mongoTestServer = await MongoMemoryServer.create();
-    const mongoUri = mongoTestServer.getUri();
-    await mongoose.connect(mongoUri);
-  });
-
-  afterAll(async () => {
-    await mongoose.connection.dropDatabase();
-    await mongoose.connection.close();
-    await mongoTestServer.stop();
-  });
-
   beforeEach(async () => {
-    // Clear the collections before each test
-    await User.deleteMany({});
     // Reset mocks
     jest.clearAllMocks();
     mockedHashPassword.mockResolvedValue('hashedpassword123');
@@ -388,7 +370,8 @@ describe("User Services Tests", () => {
       const username = 'testuser'; // Already exists from beforeEach
       const password = 'anotherpassword';
 
-      await expect(userServices.createUser(username, password)).rejects.toThrow();
+      // The duplicate username should cause a MongoDB duplicate key error
+      await expect(userServices.createUser(username, password)).rejects.toThrow(/duplicate key|E11000/);
     });
 
     test('should persist user to database', async () => {

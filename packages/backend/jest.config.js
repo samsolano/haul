@@ -21,5 +21,6 @@ export default {
     '^@common/(.*)$': '<rootDir>/../../common/$1',
   },
 
-  setupFiles: ['<rootDir>/jest.env.ts'],
+  globalSetup: '<rootDir>/tests/setup/setup.ts',
+  globalTeardown: '<rootDir>/tests/setup/teardown.ts'
 };

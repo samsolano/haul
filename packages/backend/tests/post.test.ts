@@ -1,32 +1,28 @@
 import { Post } from "@backend/src/models/post";
 import { User } from "@backend/src/models/user";
 import mongoose from 'mongoose';
-import { MongoMemoryServer } from 'mongodb-memory-server';
 import { findAllPosts, findPostById, findPostsByAuthor, createPost } from "@backend/src/services/post";
 import { PostUnresolved } from "@common/types/post";
 
+beforeAll(async () => {
+  await mongoose.connect(process.env.MONGO_TEST_URI!);
+});
+
+beforeEach(async () => {
+  const collections = mongoose.connection.collections;
+  for (const key in collections) {
+    await collections[key].deleteMany({});
+  }
+});
+
+afterAll(async () => {
+  await mongoose.connection.close();
+});
+
 describe('Post Schema Tests', () => {
-  let mongoTestServer: MongoMemoryServer;
   let testUserId: mongoose.Types.ObjectId;
 
-  // Setup test database connection
-  beforeAll(async () => {
-    mongoTestServer = await MongoMemoryServer.create();
-    const mongoUri = mongoTestServer.getUri();
-    await mongoose.connect(mongoUri);
-  });
-
-  afterAll(async () => {
-    await mongoose.connection.dropDatabase();
-    await mongoose.connection.close();
-    await mongoTestServer.stop();
-  });
-
   beforeEach(async () => {
-    // Clear the collections before each test
-    await Post.deleteMany({});
-    await User.deleteMany({});
-
     // Create a test user to use as author
     const testUser = new User({
       username: 'testuser',
@@ -384,28 +380,10 @@ describe('Post Schema Tests', () => {
 });
 
 describe("Post Services Tests", () => {
-  let mongoTestServer: MongoMemoryServer;
   let testUserId: mongoose.Types.ObjectId;
   let secondUserId: mongoose.Types.ObjectId;
 
-  // Setup test database connection
-  beforeAll(async () => {
-    mongoTestServer = await MongoMemoryServer.create();
-    const mongoUri = mongoTestServer.getUri();
-    await mongoose.connect(mongoUri);
-  });
-
-  afterAll(async () => {
-    await mongoose.connection.dropDatabase();
-    await mongoose.connection.close();
-    await mongoTestServer.stop();
-  });
-
   beforeEach(async () => {
-    // Clear the collections before each test
-    await Post.deleteMany({});
-    await User.deleteMany({});
-
     // Create test users
     const testUser = new User({
       username: 'testuser',

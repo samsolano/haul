@@ -1,30 +1,24 @@
 import { Store } from "@backend/src/models/store";
 import mongoose from 'mongoose';
-import { MongoMemoryServer } from 'mongodb-memory-server';
 import { findAllStores, findStoreById, findStoreByName, createStore } from "@backend/src/services/store";
 import { Store as StoreType } from "@common/types/store";
 
+beforeAll(async () => {
+  await mongoose.connect(process.env.MONGO_TEST_URI!);
+});
+
+beforeEach(async () => {
+  const collections = mongoose.connection.collections;
+  for (const key in collections) {
+    await collections[key].deleteMany({});
+  }
+});
+
+afterAll(async () => {
+  await mongoose.connection.close();
+});
+
 describe('Store Schema Tests', () => {
-  let mongoTestServer: MongoMemoryServer;
-
-  // Setup test database connection
-  beforeAll(async () => {
-    mongoTestServer = await MongoMemoryServer.create();
-    const mongoUri = mongoTestServer.getUri();
-    await mongoose.connect(mongoUri);
-  });
-
-  afterAll(async () => {
-    await mongoose.connection.dropDatabase();
-    await mongoose.connection.close();
-    await mongoTestServer.stop();
-  });
-
-  beforeEach(async () => {
-    // Clear the collection before each test
-    await Store.deleteMany({});
-  });
-
   describe('Schema Validation', () => {
     test('should create store with valid required data only', async () => {
       const storeData = {
@@ -411,30 +405,10 @@ describe('Store Schema Tests', () => {
 });
 
 describe("Store Services Tests", () => {
-  let mongoTestServer: MongoMemoryServer;
-
-  // Setup test database connection
-  beforeAll(async () => {
-    mongoTestServer = await MongoMemoryServer.create();
-    const mongoUri = mongoTestServer.getUri();
-    await mongoose.connect(mongoUri);
-  });
-
-  afterAll(async () => {
-    await mongoose.connection.dropDatabase();
-    await mongoose.connection.close();
-    await mongoTestServer.stop();
-  });
-
-  beforeEach(async () => {
-    // Clear the collection before each test
-    await Store.deleteMany({});
-  });
-
   describe('findAllStores', () => {
     test('should return empty array when no stores exist', async () => {
       const stores = await findAllStores();
-      
+
       expect(stores).toEqual([]);
       expect(Array.isArray(stores)).toBe(true);
       expect(stores).toHaveLength(0);
@@ -469,7 +443,7 @@ describe("Store Services Tests", () => {
       expect(stores.map(s => s.name)).toContain('Store One');
       expect(stores.map(s => s.name)).toContain('Store Two');
       expect(stores.map(s => s.name)).toContain('Store Three');
-      
+
       // Check that all stores have required fields
       stores.forEach(store => {
         expect(store._id).toBeDefined();
@@ -492,7 +466,7 @@ describe("Store Services Tests", () => {
 
       expect(stores).toHaveLength(1);
       const store = stores[0];
-      
+
       expect(store.name).toBe('Complete Store');
       expect(store.description).toBe('A store with all fields');
       expect(store.websiteUrl).toBe('https://completestore.com');
@@ -507,7 +481,7 @@ describe("Store Services Tests", () => {
     test('should return null for non-existent store ID', async () => {
       const fakeId = new mongoose.Types.ObjectId();
       const store = await findStoreById(fakeId.toString());
-      
+
       expect(store).toBeNull();
     });
 
@@ -535,7 +509,7 @@ describe("Store Services Tests", () => {
 
     test('should handle invalid ObjectId format', async () => {
       const invalidId = 'invalid-object-id';
-      
+
       await expect(findStoreById(invalidId)).rejects.toThrow();
     });
 
@@ -561,7 +535,7 @@ describe("Store Services Tests", () => {
   describe('findStoreByName', () => {
     test('should return null for non-existent store name', async () => {
       const store = await findStoreByName('Non-existent Store');
-      
+
       expect(store).toBeNull();
     });
 
@@ -589,7 +563,7 @@ describe("Store Services Tests", () => {
       };
 
       await Store.create(storeData);
-      
+
       const exactMatch = await findStoreByName('Case Sensitive Store');
       const lowerCaseMatch = await findStoreByName('case sensitive store');
       const upperCaseMatch = await findStoreByName('CASE SENSITIVE STORE');
@@ -619,10 +593,10 @@ describe("Store Services Tests", () => {
       };
 
       await Store.create(storeData);
-      
+
       const partialMatch = await findStoreByName('Complete');
       const anotherPartialMatch = await findStoreByName('Store');
-      
+
       expect(partialMatch).toBeNull();
       expect(anotherPartialMatch).toBeNull();
     });
@@ -722,10 +696,10 @@ describe("Store Services Tests", () => {
       };
 
       const createdStore = await createStore(storeData);
-      
+
       // Verify the store was actually saved to the database
       const foundStore = await Store.findById(createdStore._id);
-      
+
       expect(foundStore).not.toBeNull();
       expect(foundStore!.name).toBe('Persistence Test Store');
       expect(foundStore!.description).toBe('Store to test database persistence');

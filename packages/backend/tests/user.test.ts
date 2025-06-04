@@ -12,6 +12,8 @@ const mockedHashPassword = hashPassword as jest.MockedFunction<typeof hashPasswo
 
 beforeAll(async () => {
   await mongoose.connect(process.env.MONGO_TEST_URI!);
+  // Ensure indexes are created
+  await User.createIndexes();
 });
 
 beforeEach(async () => {

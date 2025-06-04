@@ -19,5 +19,6 @@ export default async function setup() {
 }
 
 declare global {
+    // eslint-disable-next-line no-var
     var __MONGOD__: MongoMemoryServer;
 }

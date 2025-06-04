@@ -25,7 +25,7 @@ describe('Post Schema Tests', () => {
   beforeEach(async () => {
     // Create a test user to use as author
     const testUser = new User({
-      username: 'testuser',
+      username: 'schematest_user',
       password: 'password123'
     });
     const savedUser = await testUser.save();
@@ -288,7 +288,7 @@ describe('Post Schema Tests', () => {
 
       expect(populatedPost?.author).toBeDefined();
       // @ts-expect-error - populated field changes type
-      expect(populatedPost?.author.username).toBe('testuser');
+      expect(populatedPost?.author.username).toBe('schematest_user');
     });
 
     test('should populate comment authors correctly', async () => {
@@ -313,7 +313,7 @@ describe('Post Schema Tests', () => {
 
       expect(populatedPost?.comments[0].author).toBeDefined();
       // @ts-expect-error - populated field changes type
-      expect(populatedPost?.comments[0].author.username).toBe('testuser');
+      expect(populatedPost?.comments[0].author.username).toBe('schematest_user');
     });
   });
 
@@ -386,14 +386,14 @@ describe("Post Services Tests", () => {
   beforeEach(async () => {
     // Create test users
     const testUser = new User({
-      username: 'testuser',
+      username: 'servicetest_user',
       password: 'password123'
     });
     const savedUser = await testUser.save();
     testUserId = savedUser._id;
 
     const secondUser = new User({
-      username: 'seconduser',
+      username: 'servicetest_seconduser',
       password: 'password456'
     });
     const savedSecondUser = await secondUser.save();

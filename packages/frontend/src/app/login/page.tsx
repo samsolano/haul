@@ -22,7 +22,8 @@ export default function LoginPage() {
 
       try {
         // todo: make this an env variable
-        const baseUrl = "https://haul-backend-dvbsd2fufcafhsc4.westus-01.azurewebsites.net";
+        // const baseUrl = process.env.NEXT_PUBLIC_BACKEND_URL as string;
+        const baseUrl = "localhost:3001"
         const urlEndpoint = purpose === "login" ? "/auth/login" : "/auth/register";
 
       const response = await fetch(`${baseUrl}${urlEndpoint}`, {

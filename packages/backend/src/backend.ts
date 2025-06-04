@@ -11,6 +11,7 @@ import {
   isPasswordValid,
   verifyJWT
 } from "./auth";
+import { UserWithId } from "@common/types/user";
 
 mongoose.set("debug", true);
 mongoose
@@ -67,8 +68,8 @@ app.post("/auth/register", async (req, res) => {
 
   try {
     const user = await createUser(username, password);
-    console.log("User created successfully:", username);
     const token = generateJWT(user);
+    res.status(201).json({ token, user });
     res.status(201).json({ token, user });
   } catch (err) {
     console.error("Error creating user:", err);
@@ -110,8 +111,8 @@ app.post("/auth/login", async (req, res) => {
     return;
   }
 
-  console.log("Login successful for user:", username);
-  const token = generateJWT(user);
+  const token = generateJWT({ ...user, _id: new mongoose.Types.ObjectId(user._id) });
+  res.status(200).json({ token, user });
   res.status(200).json({ token, user });
 });
 

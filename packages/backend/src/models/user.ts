@@ -25,6 +25,4 @@ export type User = {
     createdAt: Date;
 };
 
-export type UserWithId = User & { _id: ObjectId };
-
 export const User = mongoose.model("User", userSchema, "Users");

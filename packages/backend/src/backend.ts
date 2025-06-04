@@ -25,8 +25,8 @@ const port = 8000;
 
 // todo: restrict to whatever frontend domain we use
 const allowedOrigins = process.env.NODE_ENV === "production"
-  ? ["https://your-frontend-domain.com"] // production frontend
-  : ["http://localhost:3000"]; // dev frontend
+  ? ["https://your-frontend-domain.com"]
+  : [/^http:\/\/localhost:\d+$/]; // allows any localhost:* port
 
 app.use(cors({
   origin: allowedOrigins,

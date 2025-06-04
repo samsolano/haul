@@ -22,9 +22,9 @@ export default function LoginPage() {
 
       try {
         // todo: make this an env variable
-        // const baseUrl = process.env.NEXT_PUBLIC_BACKEND_URL as string;
-        const baseUrl = "localhost:3001"
+        const baseUrl = process.env.NEXT_PUBLIC_BACKEND_URL!;
         const urlEndpoint = purpose === "login" ? "/auth/login" : "/auth/register";
+      console.log("Using backend URL:", baseUrl);
 
       const response = await fetch(`${baseUrl}${urlEndpoint}`, {
         method: "POST",

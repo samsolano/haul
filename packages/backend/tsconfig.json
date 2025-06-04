@@ -2,8 +2,14 @@
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
     "outDir": "./dist",
-    "composite": true
+    "composite": true,
+    "rootDir": "../"
   },
-  "include": ["**/*.ts", "jest.config.js"],
+  "include": [
+    "backend/**/*",
+    "../common/types/**/*",
+    "**/*.ts",
+    "jest.config.js"
+  ],
   "exclude": ["node_modules"]
 }

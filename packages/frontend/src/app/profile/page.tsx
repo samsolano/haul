@@ -1,7 +1,7 @@
 'use client';
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
-import { UserProfile } from "@/types";
+import { UserProfile } from "@frontend/src/types";
 
 export default function Page() {
   const [profile, setProfile] = useState<UserProfile | null>(null);

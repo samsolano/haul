@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import Form, { type Account } from "./form";
 import { useRouter } from "next/navigation";
-import type { UserWithId } from "@common/types/user";
+import type { User, UserWithId } from "@common/types/user";
 
 export default function LoginPage() {
   const router = useRouter();

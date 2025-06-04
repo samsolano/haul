@@ -9,17 +9,15 @@
         "name": "next"
       }
     ],
-    "baseUrl": "./src", 
-    "paths": {
-      "@/*": ["*"],
-      "@common/*": ["../../common/*"]
-    }
   },
   "include": [
     "next-env.d.ts",
     "**/*.ts",
     "**/*.tsx",
-    ".next/types/**/*.ts"
+    ".next/types/**/*.ts",
+    "frontend/**/*",
+    "../common/types/**/*",
+    "jest.config.js"
   ],
   "exclude": ["node_modules"]
 }

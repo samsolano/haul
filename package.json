@@ -9,7 +9,8 @@
     "backend:test": "npm run -w backend test",
     "format": "prettier --write './**/*.{js,jsx,ts,tsx,css,md,json}' --config ./.prettierrc",
     "build": "npm run -w frontend build",
-    "postbuild": "rm -rf packages/frontend/dist && cp -r packages/frontend/.next packages/frontend/dist"
+    "postbuild": "rm -rf packages/frontend/dist && cp -r packages/frontend/.next packages/frontend/dist",
+    "cypress:open": "cypress open"
   },
   "author": "",
   "license": "ISC",
@@ -18,6 +19,7 @@
     "packages/*"
   ],
   "devDependencies": {
+    "cypress": "^14.4.1",
     "nodemon": "^3.1.10",
     "prettier": "^3.5.3"
   },

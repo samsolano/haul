@@ -3,6 +3,7 @@
   "compilerOptions": {
     "noEmit": true,
     "jsx": "preserve",
+    "composite": true,
     "plugins": [
       {
         "name": "next"

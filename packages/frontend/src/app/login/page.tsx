@@ -3,10 +3,12 @@ import React, { useState } from "react";
 import Form, { type Account } from "./form";
 import { useRouter } from "next/navigation";
 import type { UserWithId } from "@common/types/user";
+import { useCredentials } from "../../hooks/useCredentials";
 
 export default function LoginPage() {
   const router = useRouter();
   const [error, setError] = useState<string | null>(null);
+  const { login } = useCredentials();
 
   interface AuthResponse {
     token: string;
@@ -60,16 +62,10 @@ export default function LoginPage() {
         // Attempt to authenticate with the backend
         const authResponse = await authenticate(loginData, purpose);
 
-        // Store the JWT token in localStorage for later use in authenticated requests
-        localStorage.setItem('authToken', authResponse.token);
-
-        // Store user info for use across the app
-        localStorage.setItem('user', JSON.stringify(authResponse.user));
+        // Use the useCredentials hook to handle login
+        login(authResponse.user._id.toString(), authResponse.token, { username: authResponse.user.username });
 
         console.log(`${purpose} successful: (user ${authResponse.user.username})`);
-
-        // Dispatch login event for navbar update
-        window.dispatchEvent(new Event('userLogin'));
 
         // Navigate to finds page after successful login
         router.push('/finds');

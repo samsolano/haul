@@ -87,7 +87,7 @@ export default function TrendsPage() {
 
       {/* Hottest Stores Section */}
       <h2 className="text-4xl font-bold mb-6 text-[#1a1a1a]">Hottest Stores Near Los Angeles</h2>
-      <div className="flex flex-row gap-6 mb-12">
+      <div className="flex flex-row gap-6 mb-12 overflow-x-auto">
         {hottestStores.map((store, idx) => (
           <div key={idx} className="relative rounded-lg overflow-hidden shadow-lg flex-1 min-w-[120px] max-w-[260px]">
             <img

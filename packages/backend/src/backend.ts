@@ -23,7 +23,16 @@ const app = express();
 const port = 8000;
 
 // todo: restrict to whatever frontend domain we use
-app.use(cors());
+const allowedOrigins = process.env.NODE_ENV === "production"
+  ? ["https://your-frontend-domain.com"] // production frontend
+  : ["http://localhost:3000"]; // dev frontend
+
+app.use(cors({
+  origin: allowedOrigins,
+  methods: ["GET", "POST", "PUT", "DELETE"],
+  credentials: true
+}));
+
 app.use(express.json());
 
 app.get("/", (req, res) => {

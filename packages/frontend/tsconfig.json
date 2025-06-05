@@ -3,11 +3,13 @@
   "compilerOptions": {
     "jsx": "preserve",
     "composite": true,
+    "moduleResolution": "bundler",
     "plugins": [
       {
         "name": "next"
       }
     ],
+    "noEmit": true
   },
   "include": [
     "next-env.d.ts",
@@ -18,5 +20,7 @@
     "../common/types/**/*",
     "jest.config.js"
   ],
-  "exclude": ["node_modules"]
+  "exclude": [
+    "node_modules"
+  ]
 }

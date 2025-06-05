@@ -32,7 +32,8 @@ jobs:
           cp package.json deploy/
 
           cd deploy
-          zip -r ../../release.zip .
+          zip -r release.zip .
+          mv release.zip ../../release.zip  # Move release.zip to the repository root
 
       - name: Upload artifact for deployment
         uses: actions/upload-artifact@v4

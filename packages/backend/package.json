@@ -8,8 +8,9 @@
     "lint": "echo 'Linting temporarily disabled'",
     "test": "jest --runInBand",
     "coverage": "jest --runInBand --coverage",
-    "build": "tsc",
-    "start": "node dist/backend/src/backend.js"
+    "build": "tsc && npm install --production",
+    "start": "node dist/backend/src/backend.js",
+    "postinstall": "npm install --production"
   },
   "author": "",
   "license": "ISC",

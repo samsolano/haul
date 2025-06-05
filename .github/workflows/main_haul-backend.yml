@@ -23,7 +23,7 @@ jobs:
       - name: Install, build, and zip backend
         run: |
           cd packages/backend
-          npm ci
+          npm install
           npm run build
 
           mkdir deploy

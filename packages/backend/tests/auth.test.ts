@@ -1,11 +1,12 @@
 import { generateJWT, hashPassword, isPasswordValid, verifyJWT } from "@backend/src/auth";
-import { User, UserWithId } from "@backend/src/models/user";
-import { Schema } from "mongoose";
+import { User} from "@backend/src/models/user";
+import { UserWithId } from "@common/types/user";
+import mongoose from "mongoose";
 
 describe("auth", () => {
     it("should generate a valid JWT", () => {
         const fakeUser: UserWithId = {
-            _id: new Schema.Types.ObjectId("test"),
+            _id: new mongoose.Types.ObjectId(),
             createdAt: new Date(),
             username: "foo",
             password: "imagineThisIsHashed"

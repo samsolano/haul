@@ -2,14 +2,14 @@
   "name": "backend",
   "version": "1.0.0",
   "main": "index.js",
-  "type": "module",
+  "type": "commonjs",
   "scripts": {
     "dev": "tsx watch --env-file=.env src/backend.ts",
     "lint": "eslint .",
     "test": "jest --runInBand",
     "coverage": "jest --runInBand --coverage",
-      "build": "tsc",
-      "start": "node dist/backend.js"
+    "build": "tsc",
+    "start": "node dist/backend/src/backend.js"
   },
   "author": "",
   "license": "ISC",
@@ -17,6 +17,7 @@
   "dependencies": {
     "bcrypt": "^6.0.0",
     "cors": "^2.8.5",
+    "dotenv": "^16.5.0",
     "express": "^5.1.0",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.15.0"
@@ -28,6 +29,7 @@
     "@jest/globals": "^30.0.0-beta.3",
     "@types/bcrypt": "^5.0.2",
     "@types/cors": "^2.8.18",
+    "@types/dotenv": "^6.1.1",
     "@types/express": "^5.0.2",
     "@types/jest": "^29.5.14",
     "@types/jsonwebtoken": "^9.0.9",

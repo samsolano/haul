@@ -1,4 +1,4 @@
-import { Store, type StoreWithId } from "@backend/src/models/store";
+import { Store, type StoreWithId } from "../models/store";
 
 export async function findAllStores(): Promise<StoreWithId[]> {
     return Store.find();

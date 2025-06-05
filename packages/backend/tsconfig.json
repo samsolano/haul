@@ -3,13 +3,17 @@
   "compilerOptions": {
     "outDir": "./dist",
     "composite": true,
-    "rootDir": "../"
+    "rootDir": "../",
+    "types": ["jest"],         
+    "baseUrl": ".",
+    "module": "CommonJS" 
   },
-  "include": [
-    "backend/**/*",
-    "../common/types/**/*",
-    "**/*.ts",
+  "include": ["src/**/*", "../common/types/**/*"],
+  "exclude": [
+    "node_modules",
+    "dist",
+    "tests",
+    "**/*.test.ts",
     "jest.config.js"
-  ],
-  "exclude": ["node_modules"]
+  ]
 }

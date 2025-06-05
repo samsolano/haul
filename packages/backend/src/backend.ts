@@ -1,3 +1,6 @@
+import dotenv from "dotenv";
+dotenv.config();
+
 import express, {
   NextFunction,
   Request,
@@ -26,6 +29,7 @@ const port = 8000;
 const allowedOrigins = process.env.NODE_ENV === "production"
   ? [process.env.CORS_ORIGIN].filter((v): v is string => Boolean(v))
   : [/^http:\/\/localhost:\d+$/]; // allows any localhost:* port
+
 console.log ("allowedOrigins: ", allowedOrigins);
 app.use(cors({
   origin: allowedOrigins,

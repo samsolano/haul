@@ -1,5 +1,5 @@
-import {UserWithId } from "@common/types/user";
-import {User} from "@backend/src/models/user"
+import {UserWithId } from "../../../common/types/user";
+import {User} from "../models/user"
 
 export async function findAllUsers(): Promise<UserWithId[]> {
     const users = await User.find().lean();

@@ -1,5 +1,5 @@
-import { Post } from "@backend/src/models/post";
-import { PostUnresolved, PostWithId } from "@common/types/post";
+import { Post } from "../models/post";
+import { PostUnresolved, PostWithId } from "../../../common/types/post";
 import mongoose from "mongoose";
 
 export async function findAllPosts(): Promise<PostWithId[]> {

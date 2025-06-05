@@ -2,7 +2,7 @@
 import * as bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
-import type { User, UserWithId } from "@common/types/user";
+import type { User, UserWithId } from "../../common/types/user";
 
 export async function hashPassword(password: string): Promise<string> {
     return await bcrypt.hash(password, 10);

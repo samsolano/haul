@@ -34,10 +34,10 @@ export default function LoginPage() {
         },
         body: JSON.stringify(backendCreds)
       });
-
       if (!response.ok) {
-        const errorText = await response.text();
-        throw new Error(errorText || `Server error: ${response.status}`);
+          const errorText = await response.text();
+          console.error("Backend responded with error:", errorText, "Status:", response.status); // 🔧 Add this
+          throw new Error(errorText || `Server error: ${response.status}`);
       }
 
       return await response.json();

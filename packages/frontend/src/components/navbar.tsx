@@ -93,16 +93,17 @@ export default function Navbar() {
 
             <div className="hidden sm:flex flex-row text-xl ml-auto mr-4.5 gap-2 lg:gap-6 items-center">
                 {(() => {
+                    const links = LINKS.map((link) => (
+                        <Link key={link.href} href={link.href}>
+                            <button
+                                className={`hover:cursor-pointer ${pathname === link.href ? 'font-bold' : 'font-normal'}`}
+                            >
+                                {link.name}
+                            </button>
+                        </Link>
+                    ));
                     if (username) {
-                        const links = LINKS.map((link) => (
-                            <Link key={link.href} href={link.href}>
-                                <button
-                                    className={`hover:cursor-pointer ${pathname === link.href ? 'font-bold' : 'font-normal'}`}
-                                >
-                                    {link.name}
-                                </button>
-                            </Link>
-                        ));
+                        
 
                         return (
                             <>
@@ -119,11 +120,14 @@ export default function Navbar() {
                     }
 
                     return (
-                        <Link href="/login">
+                        <>
+                            {links}
+                            <Link href="/login">
                             <button className="bg-white text-black p-2 rounded-lg">
                                 Login
-                            </button>
-                        </Link>
+                                </button>
+                            </Link>
+                        </>
                     );
                 })()}
             </div>

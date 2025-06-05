@@ -13,9 +13,22 @@ export default tseslint.config(
             }
         },
         rules: {
-            'no-undef': 'off', // TypeScript handles this
+            'no-undef': 'off', 
             '@typescript-eslint/no-explicit-any': 'warn',
-            '@typescript-eslint/no-unused-vars': ['warn', { argsIgnorePattern: '^_' }]
+            '@typescript-eslint/no-unused-vars': ['warn', { argsIgnorePattern: '^_' }],
+            '@typescript-eslint/no-empty-object-type': ['error', { allowObjectTypes: true }],
+            '@typescript-eslint/ban-types': ['error', {
+                types: {
+                    '{}': {
+                        message: 'Use Record<string, unknown> instead',
+                        fixWith: 'Record<string, unknown>'
+                    },
+                    'object': {
+                        message: 'Use Record<string, unknown> instead',
+                        fixWith: 'Record<string, unknown>'
+                    }
+                }
+            }]
         }
     }
 );

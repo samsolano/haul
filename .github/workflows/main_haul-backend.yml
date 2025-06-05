@@ -34,7 +34,11 @@ jobs:
 
           cd deploy
           zip -r release.zip .
-          mv release.zip ../../release.zip  # Move release.zip to the repository root
+          mv release.zip ../../  # Ensure it is moved to the repository root
+          cd ../../  # Return to the repository root
+          
+      - name: Verify release.zip existence
+        run: ls -l release.zip
 
       - name: Upload artifact for deployment
         uses: actions/upload-artifact@v4

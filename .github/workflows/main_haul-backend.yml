@@ -23,13 +23,14 @@ jobs:
       - name: Install, build, and zip backend
         run: |
           cd packages/backend
-          npm install
+          npm ci
           npm run build
 
           mkdir deploy
           cp -r dist deploy/
           cp -r node_modules deploy/
           cp package.json deploy/
+          cp .env deploy/ || true  # Copy .env if it exists
 
           cd deploy
           zip -r release.zip .

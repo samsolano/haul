@@ -32,7 +32,7 @@ jobs:
       - name: Package backend for deployment
         working-directory: packages/backend
         run: |
-          mkdir deploy
+          mkdir -p deploy
           cp -r dist deploy/
           cp package*.json deploy/
           cd deploy
@@ -66,9 +66,9 @@ jobs:
       - name: Azure login
         uses: azure/login@v2
         with:
-          client-id:      ${{ secrets.AZUREAPPSERVICE_CLIENTID_634F905BA051430DBD1297F4D6C2F7A4 }}
-          tenant-id:      ${{ secrets.AZUREAPPSERVICE_TENANTID_E7DD10394B1A48CD8B9212EB416B1D1E }}
-          subscription-id:${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_ACF141244CAC443EB7B3F7CC08AECFE8 }}
+          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_634F905BA051430DBD1297F4D6C2F7A4 }}
+          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_E7DD10394B1A48CD8B9212EB416B1D1E }}
+          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_ACF141244CAC443EB7B3F7CC08AECFE8 }}
 
       # Oryx on App Service will now:
       #   • detect package*.json

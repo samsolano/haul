@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import Form, { type Account } from "./form";
 import { useRouter } from "next/navigation";
 import type { User, UserWithId } from "@common/types/user";
+console.log("ENV DEBUG:", process.env.NEXT_PUBLIC_BACKEND_URL);
 
 export default function LoginPage() {
   const router = useRouter();
@@ -14,6 +15,7 @@ export default function LoginPage() {
   }
 
   async function authenticate(creds: Account, purpose: "login" | "register"): Promise<AuthResponse> {
+      console.log("Using backend URL inside function:", process.env.NEXT_PUBLIC_BACKEND_URL);
       // Map frontend field names to what the backend expects
       const backendCreds = {
         username: creds.user,

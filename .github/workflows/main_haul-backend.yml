@@ -32,7 +32,8 @@ jobs:
           cp -r dist deploy/
           cp package.json deploy/
           cp -r node_modules deploy/
-          cd deploy && zip -r ../../release.zip .
+          cd deploy
+          zip -r ../../release.zip .
         working-directory: packages/backend
 
       - name: Upload artifact for deployment
@@ -46,7 +47,6 @@ jobs:
     needs: build
     environment:
       name: 'Production'
-      url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
     permissions:
       id-token: write
       contents: read

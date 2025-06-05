@@ -19,26 +19,22 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: '22.x'
-          
-      - name: Install, build, and zip backend
+
+      - name: Install and build backend
         run: |
-          cd packages/backend
           npm install
           npm run build
+        working-directory: packages/backend
 
-          mkdir deploy
-          cp -r dist deploy/
-          cp -r node_modules deploy/
-          cp package.json deploy/
-          cp .env deploy/ || true  # Copy .env if it exists
-
-          cd deploy
-          zip -r release.zip .
-          mv release.zip ../../  # Ensure it is moved to the repository root
-          cd ../../  # Return to the repository root
-          
-      - name: Verify release.zip existence
-        run: ls -l release.zip
+      - name: Prepare deployment artifact
+        run: |
+          mkdir -p packages/backend/deploy
+          cp -r packages/backend/dist packages/backend/deploy/
+          cp packages/backend/package.json packages/backend/deploy/
+          cp -r packages/backend/node_modules packages/backend/deploy/
+          cd packages/backend/deploy
+          zip -r ../../../release.zip .
+        working-directory: .
 
       - name: Upload artifact for deployment
         uses: actions/upload-artifact@v4

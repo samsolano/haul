@@ -5,10 +5,11 @@
   "type": "module",
   "scripts": {
     "dev": "tsx watch --env-file=.env src/backend.ts",
-    "start": "tsx --env-file=.env src/backend.ts",
     "lint": "eslint .",
     "test": "jest --runInBand",
-    "coverage": "jest --runInBand --coverage"
+    "coverage": "jest --runInBand --coverage",
+      "build": "tsc",
+      "start": "node dist/backend.js"
   },
   "author": "",
   "license": "ISC",

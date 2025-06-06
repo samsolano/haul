@@ -1,8 +1,11 @@
-import type { NextConfig } from "next";
 import path from "path";
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 const projectRoot = path.resolve(__dirname, "../");
 
-const nextConfig: NextConfig = {
+const nextConfig = {
   webpack: (config, { isServer }) => {
     config.resolve.alias = {
       ...(config.resolve.alias || {}),
@@ -18,6 +21,21 @@ const nextConfig: NextConfig = {
   },
 
   reactStrictMode: true,  // Enable React Strict Mode for better debugging
+
+  images: {
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'images.unsplash.com',
+        port: '',
+        pathname: '/**',
+      },
+    ],
+    // Allow data URLs for uploaded images
+    dangerouslyAllowSVG: true,
+    contentDispositionType: 'attachment',
+    contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
+  },
 };
 
 export default nextConfig;

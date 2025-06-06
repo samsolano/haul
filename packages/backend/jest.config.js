@@ -1,12 +1,12 @@
 // Unfortunately Jest needs ts-node for this file to be TS
 // We use tsx so that's not gonna happen
 
-import {createDefaultPreset} from 'ts-jest';
+const {createDefaultPreset} = require('ts-jest');
 
 const tsJestTransformCfg = createDefaultPreset().transform;
 
 /** @type {import("jest").Config} **/
-export default {
+module.exports = {
   testEnvironment: 'node',
   transform: {
     ...tsJestTransformCfg,

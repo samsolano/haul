@@ -1,8 +1,7 @@
 {
   "extends": "./tsconfig.base.json",
   "references": [
-    { "path": "./packages/backend" },
-    { "path": "./packages/frontend" }
+    { "path": "./packages/backend" }
   ],
   "exclude": ["node_modules", "dist", "coverage", ".next"]
 }

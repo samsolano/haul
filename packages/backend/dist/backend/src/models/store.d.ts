@@ -1,50 +1,50 @@
 import mongoose, { type ObjectId } from "mongoose";
 export declare const Store: mongoose.Model<{
-    name: string;
     createdAt: NativeDate;
-    description?: string | null | undefined;
-    websiteUrl?: string | null | undefined;
-    phoneNumber?: string | null | undefined;
-    address?: string | null | undefined;
+    name: string;
+    description: string;
+    websiteUrl: string;
+    phoneNumber: string;
+    address: string;
 }, {}, {}, {}, mongoose.Document<unknown, {}, {
-    name: string;
     createdAt: NativeDate;
-    description?: string | null | undefined;
-    websiteUrl?: string | null | undefined;
-    phoneNumber?: string | null | undefined;
-    address?: string | null | undefined;
+    name: string;
+    description: string;
+    websiteUrl: string;
+    phoneNumber: string;
+    address: string;
 }, {}> & {
-    name: string;
     createdAt: NativeDate;
-    description?: string | null | undefined;
-    websiteUrl?: string | null | undefined;
-    phoneNumber?: string | null | undefined;
-    address?: string | null | undefined;
+    name: string;
+    description: string;
+    websiteUrl: string;
+    phoneNumber: string;
+    address: string;
 } & {
     _id: mongoose.Types.ObjectId;
 } & {
     __v: number;
 }, mongoose.Schema<any, mongoose.Model<any, any, any, any, any, any>, {}, {}, {}, {}, mongoose.DefaultSchemaOptions, {
-    name: string;
     createdAt: NativeDate;
-    description?: string | null | undefined;
-    websiteUrl?: string | null | undefined;
-    phoneNumber?: string | null | undefined;
-    address?: string | null | undefined;
+    name: string;
+    description: string;
+    websiteUrl: string;
+    phoneNumber: string;
+    address: string;
 }, mongoose.Document<unknown, {}, mongoose.FlatRecord<{
-    name: string;
     createdAt: NativeDate;
-    description?: string | null | undefined;
-    websiteUrl?: string | null | undefined;
-    phoneNumber?: string | null | undefined;
-    address?: string | null | undefined;
+    name: string;
+    description: string;
+    websiteUrl: string;
+    phoneNumber: string;
+    address: string;
 }>, {}> & mongoose.FlatRecord<{
-    name: string;
     createdAt: NativeDate;
-    description?: string | null | undefined;
-    websiteUrl?: string | null | undefined;
-    phoneNumber?: string | null | undefined;
-    address?: string | null | undefined;
+    name: string;
+    description: string;
+    websiteUrl: string;
+    phoneNumber: string;
+    address: string;
 }> & {
     _id: mongoose.Types.ObjectId;
 } & {

@@ -42,7 +42,7 @@ function Form({ handleSubmit }: FormProps) {
                     placeholder="Enter your username"
                     value={account.user}
                     onChange={handleChange}
-                    className="shadow appearance-none border rounded w-full py-2 px-3 leading-tight focus:outline-none focus:shadow-outline"
+                    className="shadow appearance-none border text-black rounded w-full py-2 px-3 leading-tight focus:outline-none focus:shadow-outline"
                 />
 
                 <label htmlFor="password">Password</label>
@@ -53,7 +53,7 @@ function Form({ handleSubmit }: FormProps) {
                     placeholder="Enter your password"
                     value={account.password}
                     onChange={handleChange}
-                    className="border rounded w-full py-2 px-3 mb-3 leading-tight"
+                    className="border rounded w-full py-2 text-black px-3 mb-3 leading-tight"
                 />
 
                 <div className="flex flex-row gap-2">

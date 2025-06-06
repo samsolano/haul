@@ -8,12 +8,16 @@ import express, {
 } from "express";
 import mongoose from "mongoose";
 import cors from "cors";
+import multer from "multer";
 import { createUser, findUserByName } from "./services/user";
 import {
   generateJWT,
   isPasswordValid,
   verifyJWT
 } from "./auth";
+// import { uploadBlob, downloadBlob } from "./azure";
+import { createPost, findAllPosts, deletePost, addCommentToPost } from "./services/post";
+// import { Readable } from "stream";
 
 mongoose.set("debug", true);
 mongoose
@@ -37,7 +41,17 @@ app.use(cors({
   credentials: true
 }));
 
-app.use(express.json());
+// Increase body size limits for handling large images in JSON payloads
+app.use(express.json({ limit: '50mb' }));
+app.use(express.urlencoded({ limit: '50mb', extended: true }));
+
+// Configure multer for file uploads
+const upload = multer({
+  storage: multer.memoryStorage(),
+  limits: {
+    fileSize: 10 * 1024 * 1024, // 10MB limit
+  },
+});
 
 app.get("/", (req, res) => {
   res.send("Hello World!");
@@ -72,7 +86,6 @@ app.post("/auth/register", async (req, res) => {
   try {
     const user = await createUser(username, password);
     const token = generateJWT(user);
-    res.status(201).json({ token, user });
     res.status(201).json({ token, user });
   } catch (err) {
     console.error("Error creating user:", err);
@@ -116,7 +129,6 @@ app.post("/auth/login", async (req, res) => {
 
   const token = generateJWT({ ...user, _id: new mongoose.Types.ObjectId(user._id) });
   res.status(200).json({ token, user });
-  res.status(200).json({ token, user });
 });
 
 const authMiddleware = (
@@ -145,66 +157,143 @@ app.get("/testNeedsAuth", authMiddleware, async (req, res) => {
   res.send(`You are authenticated as ${req._id}`);
 });
 
-// Removed /upload endpoint
-// app.post("/upload", (req: Request, res: Response) => {
-//     if (!containerClient) {
-//         res.status(503).json({ error: "Azure Storage not configured" });
-//         return;
-//     }
-//     try {
-//         const filename = (req.query.filename as string) || "upload";
-//         const blobname = `${Date.now()}-${filename}`;
-//         const blockBlobClient = containerClient.getBlockBlobClient(blobname);
-//         const stream = Readable.from(req.body);
-//         blockBlobClient.uploadStream(stream)
-//             .then(() => {
-//                 res.status(201).json({ url: `/images/${blobname}` });
-//             })
-//             .catch((error) => {
-//                 res.status(500).json({ 
-//                     message: "Failed to upload to blob storage",
-//                     error 
-//                 });
-//             });
-//     } catch (error) {
-//         res.status(500).json({ error: "Failed to process upload" });
-//     }
-// });
+// Upload endpoint
+app.post("/upload", upload.single('image'), (req: Request, res: Response) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({ error: "No file uploaded" });
+    }
 
-// Removed /images/:blob endpoint
-// app.get("/images/:blob", (req: Request, res: Response) => {
-//     if (!containerClient) {
-//         res.status(503).json({ error: "Azure Storage not configured" });
-//         return;
-//     }
-//     const { blob } = req.params;
-//     const blockBlobClient = containerClient.getBlockBlobClient(blob);
-//     blockBlobClient.exists()
-//         .then((exists: boolean) => {
-//             if (!exists) {
-//                 res.status(404).send();
-//                 return;
-//             }
-//             return blockBlobClient.downloadToBuffer();
-//         })
-//         .then((buffer) => {
-//             if (buffer) res.send(buffer);
-//         })
-//         .catch((error) => {
-//             res.status(500).json({ 
-//                 message: "Failed to download from blob storage",
-//                 error 
-//             });
-//         });
-// });
+    const filename = req.file.originalname || "upload";
+    const blobname = `${Date.now()}-${filename}`;
+    
+    // For now, return a mock URL until Azure is properly configured
+    // Convert buffer to base64 data URL
+    const mimeType = req.file.mimetype || 'image/jpeg';
+    const base64Data = req.file.buffer.toString('base64');
+    const mockUrl = `data:${mimeType};base64,${base64Data}`;
+    
+    console.log(`File uploaded: ${filename}, size: ${req.file.size} bytes`);
+    res.status(201).json({ url: mockUrl });
+  } catch (error) {
+    console.error("Upload error:", error);
+    res.status(500).json({ error: "Failed to process upload" });
+  }
+});
 
-// Removed /photos/upload and /photos/download/:blob endpoints
-// app.post("/photos/upload", uploadBlob);
-// app.get("/photos/download/:blob", downloadBlob);
+// Get all posts endpoint
+app.get("/posts", async (req: Request, res: Response) => {
+  try {
+    const posts = await findAllPosts();
+    res.json(posts);
+  } catch (error) {
+    console.error("Error fetching posts:", error);
+    res.status(500).json({ error: "Failed to fetch posts" });
+  }
+});
 
-// app.listen(port, () => {
-//     console.log(`Server running at http://localhost:${port}`);
-// });
+// Create new post endpoint
+app.post("/posts", authMiddleware, async (req: Request, res: Response) => {
+  try {
+    const { mainImageUrl, description } = req.body;
+    
+    if (!mainImageUrl || !description) {
+      res.status(400).json({ error: "mainImageUrl and description are required" });
+      return;
+    }
+
+    const authorId = new mongoose.Types.ObjectId(req._id);
+    const postData = {
+      mainImageUrl,
+      description,
+      author: authorId
+    };
+
+    const post = await createPost(postData);
+    res.status(201).json(post);
+  } catch (error) {
+    console.error("Error creating post:", error);
+    res.status(500).json({ error: "Failed to create post" });
+  }
+});
+
+// Delete post endpoint
+app.delete("/posts/:id", authMiddleware, async (req: Request, res: Response) => {
+  try {
+    const postId = req.params.id;
+    
+    if (!postId) {
+      res.status(400).json({ error: "Post ID is required" });
+      return;
+    }
+
+    const authorId = new mongoose.Types.ObjectId(req._id);
+    const deleted = await deletePost(postId, authorId);
+    
+    if (!deleted) {
+      res.status(404).json({ error: "Post not found" });
+      return;
+    }
+
+    res.status(200).json({ message: "Post deleted successfully" });
+  } catch (error) {
+    if (error instanceof Error && error.message.includes("Unauthorized")) {
+      res.status(403).json({ error: error.message });
+    } else {
+      console.error("Error deleting post:", error);
+      res.status(500).json({ error: "Failed to delete post" });
+    }
+  }
+});
+
+// Add comment to post endpoint
+app.post("/posts/:id/comments", authMiddleware, async (req: Request, res: Response) => {
+  try {
+    const postId = req.params.id;
+    const { content } = req.body;
+    
+    if (!postId) {
+      res.status(400).json({ error: "Post ID is required" });
+      return;
+    }
+    
+    if (!content || typeof content !== 'string') {
+      res.status(400).json({ error: "Comment content is required" });
+      return;
+    }
+
+    const authorId = new mongoose.Types.ObjectId(req._id);
+    const comment = {
+      author: authorId,
+      content: content.trim()
+    };
+
+    const updatedPost = await addCommentToPost(postId, comment);
+    
+    if (!updatedPost) {
+      res.status(404).json({ error: "Post not found" });
+      return;
+    }
+
+    res.status(201).json(updatedPost);
+  } catch (error) {
+    console.error("Error adding comment:", error);
+    res.status(500).json({ error: "Failed to add comment" });
+  }
+});
+
+// Download image endpoint (placeholder)
+app.get("/images/:blob", (req: Request, res: Response) => {
+  try {
+    // For now, return a placeholder response
+    // In a real scenario, you would download from Azure blob storage
+    res.status(200).send("Image download endpoint - Azure not configured");
+  } catch (error) {
+    console.error("Download error:", error);
+    res.status(500).json({ error: "Failed to download image" });
+  }
+});
+
 app.listen(process.env.PORT || port, () => {
   console.log("REST API is listening.");
 });

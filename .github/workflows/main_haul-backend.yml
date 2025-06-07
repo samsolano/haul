@@ -2,11 +2,11 @@ name: Build and deploy Node.js app to Azure Web App - Haul-backend
 
 on:
   push:
-    branches: [main]
+    branches:
+      - main
   workflow_dispatch:
 
 jobs:
-# ─────────────────────────────── BUILD ────────────────────────────────
   build:
     runs-on: ubuntu-latest
     permissions:
@@ -20,56 +20,61 @@ jobs:
         with:
           node-version: '22.x'
 
-      # install **inside backend** – dev-deps allowed so TS build works
-      - name: Install deps & build backend
-        working-directory: packages/backend
+      - name: Install and build backend
         run: |
-          npm install --no-audit --no-fund
+          npm install
           npm run build
-
-      # zip only dist + manifests (NO node_modules)
-      - name: Package backend for deployment
         working-directory: packages/backend
-        run: |
-          mkdir deploy
-          cp -r dist deploy/
-          cp package*.json deploy/
-          cd deploy
-          zip -r ../../release.zip .
 
-      - uses: actions/upload-artifact@v4
+      - name: Prepare deployment artifact
+        run: |
+          mkdir -p packages/backend/deploy
+          cp -r packages/backend/dist packages/backend/deploy/
+          cp packages/backend/package.json packages/backend/deploy/
+          cp -r packages/backend/node_modules packages/backend/deploy/
+          cd packages/backend/deploy
+          zip -r ../../../release.zip .
+        working-directory: .
+
+      - name: Upload artifact for deployment
+        uses: actions/upload-artifact@v4
         with:
-          name: backend-build
+          name: node-app
           path: release.zip
 
-# ────────────────────────────── DEPLOY ────────────────────────────────
+      - name: Debug artifact existence
+        run: ls -l release.zip
+        working-directory: .
+
   deploy:
     runs-on: ubuntu-latest
     needs: build
     environment:
-      name: Production
+      name: 'Production'
     permissions:
       id-token: write
       contents: read
 
     steps:
-      - uses: actions/download-artifact@v4
+      - name: Download artifact
+        uses: actions/download-artifact@v4
         with:
-          name: backend-build
+          name: node-app
 
-      - run: unzip release.zip
+      - name: Unzip artifact
+        run: unzip release.zip
 
-      - name: Azure login
+      - name: Login to Azure
         uses: azure/login@v2
         with:
-          client-id:      ${{ secrets.AZUREAPPSERVICE_CLIENTID_634F905BA051430DBD1297F4D6C2F7A4 }}
-          tenant-id:      ${{ secrets.AZUREAPPSERVICE_TENANTID_E7DD10394B1A48CD8B9212EB416B1D1E }}
+          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_634F905BA051430DBD1297F4D6C2F7A4 }}
+          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_E7DD10394B1A48CD8B9212EB416B1D1E }}
           subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_ACF141244CAC443EB7B3F7CC08AECFE8 }}
 
       - name: Deploy to Azure Web App
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v3
         with:
-          app-name: Haul-backend
-          slot-name: Production
+          app-name: 'Haul-backend'
+          slot-name: 'Production'
           package: .

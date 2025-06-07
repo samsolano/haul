@@ -1,10 +1,10 @@
-import { User } from "@backend/src/models/user";
-import { hashPassword } from "@backend/src/auth";
-import * as userServices from "@backend/src/services/user";
+import { User } from "../src/models/user";
+import { hashPassword } from "../src/auth";
+import * as userServices from "../src/services/user";
 import mongoose from 'mongoose';
 
 // Mock the hashPassword function
-jest.mock('@backend/src/auth', () => ({
+jest.mock('../src/auth', () => ({
   hashPassword: jest.fn()
 }));
 

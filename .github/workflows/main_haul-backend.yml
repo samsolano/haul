@@ -24,14 +24,11 @@ jobs:
         run: |
           npm install
           npm run build
-        working-directory: packages/backend
-
-      - name: Prepare deployment artifact
+        working-directory: packages/backend      - name: Prepare deployment artifact
         run: |
           mkdir -p packages/backend/deploy
           cp -r packages/backend/dist packages/backend/deploy/
-          cp packages/backend/package.json packages/backend/deploy/
-          cp -r packages/backend/node_modules packages/backend/deploy/
+          cp packages/backend/package*.json packages/backend/deploy/
           cd packages/backend/deploy
           zip -r ../../../release.zip .
         working-directory: .

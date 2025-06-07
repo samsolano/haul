@@ -16,6 +16,5 @@ async function findStoreByName(name) {
 }
 async function createStore(info) {
     const store = new store_1.Store(info);
-    // @ts-expect-error: .save() doesn't add _id to the type.
     return await store.save();
 }

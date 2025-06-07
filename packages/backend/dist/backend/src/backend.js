@@ -11,9 +11,7 @@ const cors_1 = __importDefault(require("cors"));
 const multer_1 = __importDefault(require("multer"));
 const user_1 = require("./services/user");
 const auth_1 = require("./auth");
-// import { uploadBlob, downloadBlob } from "./azure";
 const post_1 = require("./services/post");
-// import { Readable } from "stream";
 mongoose_1.default.set("debug", true);
 mongoose_1.default
     .connect(process.env.MONGO_CONNECTION_STRING || 'mongodb://localhost:27017/haul')
@@ -22,24 +20,21 @@ mongoose_1.default
 });
 const app = (0, express_1.default)();
 const port = 8000;
-// todo: restrict to whatever frontend domain we use
 const allowedOrigins = process.env.NODE_ENV === "production"
     ? [process.env.CORS_ORIGIN].filter((v) => Boolean(v))
-    : [/^http:\/\/localhost:\d+$/]; // allows any localhost:* port
+    : [/^http:\/\/localhost:\d+$/];
 console.log("allowedOrigins: ", allowedOrigins);
 app.use((0, cors_1.default)({
     origin: allowedOrigins,
     methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true
 }));
-// Increase body size limits for handling large images in JSON payloads
 app.use(express_1.default.json({ limit: '50mb' }));
 app.use(express_1.default.urlencoded({ limit: '50mb', extended: true }));
-// Configure multer for file uploads
 const upload = (0, multer_1.default)({
     storage: multer_1.default.memoryStorage(),
     limits: {
-        fileSize: 10 * 1024 * 1024, // 10MB limit
+        fileSize: 10 * 1024 * 1024,
     },
 });
 app.get("/", (req, res) => {
@@ -125,7 +120,6 @@ const authMiddleware = (req, res, next) => {
 app.get("/testNeedsAuth", authMiddleware, async (req, res) => {
     res.send(`You are authenticated as ${req._id}`);
 });
-// Upload endpoint
 app.post("/upload", upload.single('image'), (req, res) => {
     try {
         if (!req.file) {
@@ -133,8 +127,6 @@ app.post("/upload", upload.single('image'), (req, res) => {
         }
         const filename = req.file.originalname || "upload";
         const blobname = `${Date.now()}-${filename}`;
-        // For now, return a mock URL until Azure is properly configured
-        // Convert buffer to base64 data URL
         const mimeType = req.file.mimetype || 'image/jpeg';
         const base64Data = req.file.buffer.toString('base64');
         const mockUrl = `data:${mimeType};base64,${base64Data}`;
@@ -146,7 +138,6 @@ app.post("/upload", upload.single('image'), (req, res) => {
         res.status(500).json({ error: "Failed to process upload" });
     }
 });
-// Get all posts endpoint
 app.get("/posts", async (req, res) => {
     try {
         const posts = await (0, post_1.findAllPosts)();
@@ -157,7 +148,6 @@ app.get("/posts", async (req, res) => {
         res.status(500).json({ error: "Failed to fetch posts" });
     }
 });
-// Create new post endpoint
 app.post("/posts", authMiddleware, async (req, res) => {
     try {
         const { mainImageUrl, description } = req.body;
@@ -179,7 +169,6 @@ app.post("/posts", authMiddleware, async (req, res) => {
         res.status(500).json({ error: "Failed to create post" });
     }
 });
-// Delete post endpoint
 app.delete("/posts/:id", authMiddleware, async (req, res) => {
     try {
         const postId = req.params.id;
@@ -205,11 +194,37 @@ app.delete("/posts/:id", authMiddleware, async (req, res) => {
         }
     }
 });
-// Download image endpoint (placeholder)
+app.post("/posts/:id/comments", authMiddleware, async (req, res) => {
+    try {
+        const postId = req.params.id;
+        const { content } = req.body;
+        if (!postId) {
+            res.status(400).json({ error: "Post ID is required" });
+            return;
+        }
+        if (!content || typeof content !== 'string') {
+            res.status(400).json({ error: "Comment content is required" });
+            return;
+        }
+        const authorId = new mongoose_1.default.Types.ObjectId(req._id);
+        const comment = {
+            author: authorId,
+            content: content.trim()
+        };
+        const updatedPost = await (0, post_1.addCommentToPost)(postId, comment);
+        if (!updatedPost) {
+            res.status(404).json({ error: "Post not found" });
+            return;
+        }
+        res.status(201).json(updatedPost);
+    }
+    catch (error) {
+        console.error("Error adding comment:", error);
+        res.status(500).json({ error: "Failed to add comment" });
+    }
+});
 app.get("/images/:blob", (req, res) => {
     try {
-        // For now, return a placeholder response
-        // In a real scenario, you would download from Azure blob storage
         res.status(200).send("Image download endpoint - Azure not configured");
     }
     catch (error) {

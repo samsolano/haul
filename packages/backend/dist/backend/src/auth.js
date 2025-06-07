@@ -40,7 +40,6 @@ exports.hashPassword = hashPassword;
 exports.isPasswordValid = isPasswordValid;
 exports.generateJWT = generateJWT;
 exports.verifyJWT = verifyJWT;
-// Auth utilities
 const bcrypt = __importStar(require("bcrypt"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 async function hashPassword(password) {

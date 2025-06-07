@@ -6,7 +6,6 @@ exports.createUser = createUser;
 const user_1 = require("../models/user");
 async function findAllUsers() {
     const users = await user_1.User.find().lean();
-    // Convert _id to string for each user
     return users.map(u => ({
         ...u,
         _id: u._id.toString(),

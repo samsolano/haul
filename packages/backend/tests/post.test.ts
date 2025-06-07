@@ -1,8 +1,8 @@
-import { Post } from "@backend/src/models/post";
-import { User } from "@backend/src/models/user";
+import { Post } from "../src/models/post";
+import { User } from "../src/models/user";
 import mongoose from 'mongoose';
-import { findAllPosts, findPostById, findPostsByAuthor, createPost } from "@backend/src/services/post";
-import { PostUnresolved } from "@common/types/post";
+import { findAllPosts, findPostById, findPostsByAuthor, createPost } from "../src/services/post";
+import { PostUnresolved } from "../../common/types/post";
 
 beforeAll(async () => {
   await mongoose.connect(process.env.MONGO_TEST_URI!);

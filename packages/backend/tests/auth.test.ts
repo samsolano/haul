@@ -48,7 +48,7 @@ describe("auth", () => {
 
             expect(() => {
                 // eslint-disable-next-line @typescript-eslint/no-require-imports
-                require("@backend/src/auth");
+                require("../src/auth");
             }).toThrow("JWT_SECRET is not set");
         });
 

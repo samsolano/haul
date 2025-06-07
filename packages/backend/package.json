@@ -8,7 +8,7 @@
     "lint": "echo 'Linting temporarily disabled'",
     "test": "jest --runInBand",
     "coverage": "jest --runInBand --coverage",
-    "build": "tsc",
+    "build": "tsc -p tsconfig.build.json",
     "start": "node dist/backend/src/backend.js"
   },
   "author": "",

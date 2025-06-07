@@ -1,7 +1,7 @@
-import { Store } from "@backend/src/models/store";
+import { Store } from "../src/models/store";
 import mongoose from 'mongoose';
-import { findAllStores, findStoreById, findStoreByName, createStore } from "@backend/src/services/store";
-import { Store as StoreType } from "@common/types/store";
+import { findAllStores, findStoreById, findStoreByName, createStore } from "../src/services/store";
+import { Store as StoreType } from "../../common/types/store";
 
 beforeAll(async () => {
   await mongoose.connect(process.env.MONGO_TEST_URI!);

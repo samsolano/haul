@@ -1,9 +1,3 @@
 # haul
 
-This is a Next.js app serving as a full stack application for the Haul project.
-
-## Development
-
-Run `npm run backend:dev` to start the express dev server
-
-Run `npm run frontend:dev` to start the next.js frontend
+This project is a thrift website for people to be able to see thrift stores near them, check ratings and rate them themselves. They can see all of the cool finds people got and where they got them. There will be an algorithm to push content that has gotten lots of attention so that other people can see all of the cool stuff. 

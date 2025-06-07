@@ -1,0 +1,1 @@
+The project is split into two main packages: the frontend and the backend. The frontend contains our nextjs project and contains api calls to reach the backend. The backend has all the endpoints that the frontend calls, and it also contains the logic to handle authentication, and also connect to the database so that we can serve the information to the frontend
